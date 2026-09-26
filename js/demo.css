@@ -1,0 +1,4 @@
+.demo-banner{position:sticky;top:0;z-index:2000;display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:#151a15;color:#f1f0e8;font:700 10px/1.6 monospace;padding:9px 16px;border-bottom:2px solid #d2f26b}
+.demo-banner strong{color:#d2f26b;letter-spacing:.06em}
+.demo-banner span{color:#c3cfbf}
+.demo-banner button{margin-left:auto;background:#d2f26b;border:0;color:#151a15;font:700 10px monospace;padding:6px 10px;cursor:pointer}
