@@ -1,0 +1,873 @@
+<!doctype html>
+<html lang="id">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#121411">
+    <meta name="description" content="Arsipkan rilisan: identitas, tracklist, foto sampul, dan sumber. Dikirim ke kurator Noiseantara untuk diverifikasi.">
+    <meta name="robots" content="noindex, follow">
+
+    <link rel="canonical" href="kontribusi/rilisan.html">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Noiseantara">
+    <meta property="og:title" content="Kirim rilisan ke arsip — Noiseantara">
+    <meta property="og:description" content="Arsipkan rilisan: identitas, tracklist, foto sampul, dan sumber.">
+    <meta property="og:locale" content="id_ID">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+    <link rel="preload" href="../assets/fonts/barlow-condensed-800.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="../assets/fonts/dm-sans-variable.woff2" as="font" type="font/woff2" crossorigin>
+
+    <link rel="stylesheet" href="../vendor/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css">
+    <link rel="stylesheet" href="../assets/styles.css">
+    <link rel="stylesheet" href="../assets/extras.css">
+    <link rel="stylesheet" href="../assets/kontribusi.css">
+    <title>Kirim rilisan — Noiseantara</title>
+</head>
+<body>
+<div class="demo-banner" id="demoBanner" role="note"><strong>PRATINJAU DEMO</strong><span>Situs statis — form ini adalah tampilan sebenarnya, tapi dikirim ke spreadsheet kurator, bukan ke arsip produksi.</span><button type="button" data-demo-dismiss aria-label="Tutup banner">Tutup ✕</button></div>
+<a class="skip-link" href="#main-content">Lewati ke konten utama</a>
+
+<div class="top-strip">
+    <div class="site-container top-strip-inner">
+        <span><span class="top-pulse"></span> NOISEANTARA <span class="top-divider">/</span> KONTRIBUSI</span>
+        <span class="top-strip-right">SETIAP ENTRI DIVERIFIKASI KURATOR SEBELUM MUNCUL DI PUBLIK <span>↗</span></span>
+    </div>
+</div>
+
+<header class="site-header">
+    <div class="site-container header-inner">
+        <a href="../index.html" class="brand" aria-label="Noiseantara — beranda"><span class="brand-symbol" aria-hidden="true"><svg viewBox="0 0 52 52" fill="none"><path d="M6 39V14L17 39V14L28 39V14L39 39V14l7 25" stroke="currentColor" stroke-width="5.8" stroke-linecap="square"/></svg></span><span class="brand-type"><strong>NOISE<span>ANTARA</span></strong><small>ARSIP MUSIK BAWAH TANAH</small></span></a>
+        <nav class="desktop-nav" aria-label="Navigasi utama">
+            <a href="../rilisan/index.html">Rilisan</a>
+            <a href="../artis/index.html">Artis</a>
+            <a href="../gig/index.html">Gig</a>
+            <a href="../zine/index.html">Zine</a>
+            <a href="../label/index.html">Label</a>
+            <a href="../scene/index.html">Scene</a>
+            <a href="panduan.html">Panduan</a>
+        </nav>
+        <div class="header-actions">
+            <button type="button" class="header-search" data-bs-toggle="modal" data-bs-target="#searchModal" aria-label="Buka pencarian arsip">
+                <i class="icon ph ph-magnifying-glass" style="font-size:20px" aria-hidden="true"></i><span>CARI</span>
+            </button>
+            <a href="../rilisan/index.html" class="header-contribute">LIHAT ARSIP <i class="icon ph ph-arrow-up-right" style="font-size:16px" aria-hidden="true"></i></a>
+            <button class="header-mobile-menu" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileNav" aria-controls="mobileNav" aria-label="Buka menu"><i class="icon ph ph-list" style="font-size:25px" aria-hidden="true"></i></button>
+        </div>
+    </div>
+</header>
+
+<main id="main-content" tabindex="-1">
+    <section class="page-intro page-intro--dark">
+        <div class="site-container">
+            <p class="eyebrow eyebrow--light"><span class="eyebrow-index">KONTRIBUSI / RILISAN</span><span class="eyebrow-line"></span>LIMA BAGIAN, SATU KIRIMAN</p>
+            <div class="page-intro-inner">
+                <div>
+                    <h1 class="page-display">ARSIPKAN<br><em>SEBUAH RILISAN.</em></h1>
+                    <p class="page-intro-copy">
+                        Isi sepanjang yang kamu tahu. Form ini sengaja memakai
+                        bentuk yang sama dengan form kurator: isi yang sama, supaya
+                        tidak ada yang hilang di tengah jalan. Entri baru lahir
+                        sebagai <strong>draf</strong> — baru tayang setelah kurator
+                        memverifikasinya.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="kontribusi-page">
+        <div class="site-container">
+            <nav class="breadcrumbs" aria-label="Remah roti">
+                <a href="../index.html">Beranda</a> <span>/</span>
+                <a href="panduan.html">Panduan arsip</a> <span>/</span>
+                <strong>Kirim rilisan</strong>
+            </nav>
+
+            <div class="kontribusi-endpoint" data-endpoint-note hidden role="status"></div>
+
+            <form class="kontribusi-form" id="formKontribusi" novalidate
+                data-release-form data-demo-form="kontribusi">
+
+                <!-- Jerat bot: field ini disembunyikan dari pengguna lewat CSS,
+                     bukan `type=hidden`, karena bot pengisi-otomatis biasanya
+                     melewati field hidden tapi mengisi field teks yang tersembunyi.
+                     Bukan mekanisme keamanan - hanya filter sampah murah. -->
+                <div class="perangkap" aria-hidden="true">
+                    <label>Jangan diisi
+                        <input type="text" name="perangkap" tabindex="-1" autocomplete="off">
+                    </label>
+                </div>
+
+                <div class="kontribusi-layout">
+
+                    <div class="kontribusi-main">
+
+                        <!-- ============ 01 IDENTITAS ============ -->
+                        <section class="k-form-section" id="bagian-identitas" aria-labelledby="judul-identitas">
+                            <header class="k-form-head">
+                                <span class="k-form-num">01</span>
+                                <div>
+                                    <h2 id="judul-identitas">IDENTITAS RILISAN.</h2>
+                                    <p>Judul, bentuk, dan tanggal. Yang bertanda <b>*</b> wajib diisi.</p>
+                                </div>
+                            </header>
+
+                            <div class="k-field">
+                                <label for="f-title">JUDUL <span aria-hidden="true">*</span></label>
+                                <input type="text" id="f-title" name="title" class="form-control-n" required
+                                    maxlength="200" autocomplete="off" placeholder="mis. Demo '94"
+                                    data-bind="rilisan.judul">
+                                <p class="k-hint">Tulis persis seperti tercetak di sampul.</p>
+                                <p class="k-error" data-error-for="title" hidden></p>
+                            </div>
+
+                            <section class="k-repeater" data-repeater="judul-alternatif" data-max="6" aria-labelledby="judul-alt">
+                                <header class="k-repeater-head">
+                                    <div>
+                                        <h3 id="judul-alt">Judul alternatif</h3>
+                                        <p>Ejaan lain yang pernah dipakai — judul pita, singkatan, atau salah tulis yang lazim.</p>
+                                    </div>
+                                    <div class="k-repeater-tools">
+                                        <span class="k-count"><b data-repeater-count>01</b> baris</span>
+                                        <button type="button" class="k-btn-mini" data-repeater-add>TAMBAH JUDUL</button>
+                                    </div>
+                                </header>
+                                <p class="k-max-hint" data-repeater-max hidden>Batas enam judul alternatif sudah tercapai.</p>
+                                <div class="k-repeater-rows" data-repeater-rows>
+                                    <div class="k-row">
+                                        <span class="k-row-ord" aria-hidden="true">01</span>
+                                        <div class="k-cell k-cell--grow">
+                                            <input type="text" class="form-control-n" maxlength="200"
+                                                data-bind="judulAlternatif" placeholder="mis. versi kaset 1994"
+                                                aria-label="Judul alternatif">
+                                        </div>
+                                        <div class="k-row-actions">
+                                            <button type="button" class="k-row-remove" aria-label="Hapus judul alternatif">✕</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <template data-repeater-template>
+                                    <div class="k-row">
+                                        <span class="k-row-ord" aria-hidden="true"></span>
+                                        <div class="k-cell k-cell--grow">
+                                            <input type="text" class="form-control-n" maxlength="200"
+                                                data-bind="judulAlternatif" placeholder="mis. versi kaset 1994"
+                                                aria-label="Judul alternatif">
+                                        </div>
+                                        <div class="k-row-actions">
+                                            <button type="button" class="k-row-remove" aria-label="Hapus judul alternatif">✕</button>
+                                        </div>
+                                    </div>
+                                </template>
+                            </section>
+
+                            <div class="k-grid">
+                                <div class="k-field">
+                                    <label for="f-jenis">JENIS RILISAN <span aria-hidden="true">*</span></label>
+                                    <select id="f-jenis" name="release_type" class="form-select form-control-n" required
+                                        data-bind="rilisan.jenis">
+                                        <option value="">— pilih —</option>
+                                        <option value="full_album">Full album</option>
+                                        <option value="ep">EP</option>
+                                        <option value="single">Single</option>
+                                        <option value="demo">Demo</option>
+                                        <option value="kompilasi">Kompilasi</option>
+                                        <option value="split">Split</option>
+                                    </select>
+                                    <p class="k-error" data-error-for="release_type" hidden></p>
+                                </div>
+
+                                <div class="k-field">
+                                    <label for="f-label">LABEL</label>
+                                    <input type="text" id="f-label" name="label" class="form-control-n"
+                                        maxlength="200" autocomplete="off" placeholder="mis. Rekaman Pinggir"
+                                        data-bind="rilisan.label" list="saran-label">
+                                    <datalist id="saran-label">
+                                        <option value="Rekaman Pinggir"></option>
+                                        <option value="Endless Chain Records"></option>
+                                        <option value="Escape Records"></option>
+                                        <option value="Kertas Mati"></option>
+                                        <option value="Sisi Lain Records"></option>
+                                    </datalist>
+                                    <p class="k-hint">Belum ada? Tulis saja namanya — kurator yang menautkannya.</p>
+                                </div>
+
+                                <div class="k-field">
+                                    <label for="f-tahun">TAHUN</label>
+                                    <input type="number" id="f-tahun" name="release_year" class="form-control-n"
+                                        min="1900" max="2100" inputmode="numeric" placeholder="1994"
+                                        data-bind="rilisan.tahun">
+                                </div>
+
+                                <div class="k-field">
+                                    <label for="f-tanggal">TANGGAL RILIS</label>
+                                    <input type="date" id="f-tanggal" name="release_date" class="form-control-n"
+                                        data-bind="rilisan.tanggalRilis">
+                                </div>
+
+                                <div class="k-field">
+                                    <label for="f-presisi">PRESISI TANGGAL</label>
+                                    <select id="f-presisi" name="date_precision" class="form-select form-control-n"
+                                        data-bind="rilisan.presisiTanggal">
+                                        <option value="">—</option>
+                                        <option value="hari">Hari</option>
+                                        <option value="bulan">Bulan</option>
+                                        <option value="tahun">Tahun</option>
+                                        <option value="perkiraan_tahun">Perkiraan tahun</option>
+                                        <option value="tidak_diketahui">Tidak diketahui</option>
+                                    </select>
+                                    <p class="k-hint">Pilih sejujur yang diketahui. Perkiraan yang jujur lebih berguna daripada tanggal semu.</p>
+                                </div>
+
+                                <div class="k-field">
+                                    <label for="f-katalog">NOMOR KATALOG</label>
+                                    <input type="text" id="f-katalog" name="catalog_number" class="form-control-n"
+                                        maxlength="60" autocomplete="off" placeholder="mis. NR-004"
+                                        data-bind="rilisan.katalog">
+                                </div>
+                            </div>
+
+                            <div class="k-field">
+                                <label id="label-format">FORMAT FISIK</label>
+                                <div class="k-chips" role="group" aria-labelledby="label-format">
+                                    <label class="k-chip"><input type="checkbox" value="kaset" data-bind="rilisan.formatFisik"><span>Kaset</span></label>
+                                    <label class="k-chip"><input type="checkbox" value="cd" data-bind="rilisan.formatFisik"><span>CD</span></label>
+                                    <label class="k-chip"><input type="checkbox" value="cd_r" data-bind="rilisan.formatFisik"><span>CD-R</span></label>
+                                    <label class="k-chip"><input type="checkbox" value="vinyl" data-bind="rilisan.formatFisik"><span>Vinyl</span></label>
+                                    <label class="k-chip"><input type="checkbox" value="digital_only" data-bind="rilisan.formatFisik"><span>Digital</span></label>
+                                    <label class="k-chip"><input type="checkbox" value="lainnya" data-bind="rilisan.formatFisik"><span>Lainnya</span></label>
+                                </div>
+                                <p class="k-hint">Boleh lebih dari satu. Entri yang aslinya tidak diketahui tetap boleh lahir.</p>
+                            </div>
+
+                            <div class="k-field">
+                                <label for="f-deskripsi">DESKRIPSI</label>
+                                <textarea id="f-deskripsi" name="description" rows="4" class="form-control-n"
+                                    maxlength="5000" data-bind="rilisan.deskripsi"
+                                    placeholder="Konteks rilisan: siapa yang merilis, di mana direkam, kenapa penting di arsip."></textarea>
+                                <p class="k-hint">Maksimal 5.000 karakter. Tulis hanya yang bisa ditelusuri sumbernya.</p>
+                            </div>
+                        </section>
+
+                        <!-- ============ 02 ARTIS & GENRE ============ -->
+                        <section class="k-form-section" id="bagian-kredit" aria-labelledby="judul-kredit">
+                            <header class="k-form-head">
+                                <span class="k-form-num">02</span>
+                                <div>
+                                    <h2 id="judul-kredit">ARTIS &amp; GENRE.</h2>
+                                    <p>Kredit yang terbaca di halaman publik. Baris kosong diabaikan.</p>
+                                </div>
+                            </header>
+
+                            <section class="k-repeater" data-repeater="artis" data-max="30" aria-labelledby="judul-artis">
+                                <header class="k-repeater-head">
+                                    <div>
+                                        <h3 id="judul-artis">Artis &amp; peran</h3>
+                                        <p>Peran menentukan bagaimana nama ini disebut di halaman rilisan.</p>
+                                    </div>
+                                    <div class="k-repeater-tools">
+                                        <span class="k-count"><b data-repeater-count>01</b> baris</span>
+                                        <button type="button" class="k-btn-mini" data-repeater-add>TAMBAH ARTIS</button>
+                                    </div>
+                                </header>
+                                <p class="k-max-hint" data-repeater-max hidden>Batas 30 artis per rilisan sudah tercapai.</p>
+                                <div class="k-repeater-labels" aria-hidden="true"><span></span><span>NAMA ARTIS</span><span>PERAN</span><span></span></div>
+                                <div class="k-repeater-rows" data-repeater-rows>
+                                    <div class="k-row">
+                                        <span class="k-row-ord" aria-hidden="true">01</span>
+                                        <div class="k-cell">
+                                            <input type="text" class="form-control-n" maxlength="200"
+                                                data-bind="artis.nama" placeholder="mis. Sacred" list="saran-artis" aria-label="Nama artis">
+                                        </div>
+                                        <div class="k-cell">
+                                            <select class="form-select form-control-n" data-bind="artis.peran" aria-label="Peran artis">
+                                                <option value="utama">Artis utama</option>
+                                                <option value="tampil_tamu">Tampil tamu</option>
+                                                <option value="remix">Remix / produksi</option>
+                                            </select>
+                                        </div>
+                                        <div class="k-row-actions">
+                                            <button type="button" class="k-row-remove" aria-label="Hapus artis">✕</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <template data-repeater-template>
+                                    <div class="k-row">
+                                        <span class="k-row-ord" aria-hidden="true"></span>
+                                        <div class="k-cell">
+                                            <input type="text" class="form-control-n" maxlength="200"
+                                                data-bind="artis.nama" placeholder="mis. Sacred" list="saran-artis" aria-label="Nama artis">
+                                        </div>
+                                        <div class="k-cell">
+                                            <select class="form-select form-control-n" data-bind="artis.peran" aria-label="Peran artis">
+                                                <option value="utama">Artis utama</option>
+                                                <option value="tampil_tamu">Tampil tamu</option>
+                                                <option value="remix">Remix / produksi</option>
+                                            </select>
+                                        </div>
+                                        <div class="k-row-actions">
+                                            <button type="button" class="k-row-remove" aria-label="Hapus artis">✕</button>
+                                        </div>
+                                    </div>
+                                </template>
+                                <p class="k-hint">Artis belum terdaftar? Tulis namanya apa adanya — kurator yang menautkannya ke entri artis.</p>
+                            </section>
+
+                            <section class="k-repeater" data-repeater="genre" data-max="12" aria-labelledby="judul-genre">
+                                <header class="k-repeater-head">
+                                    <div>
+                                        <h3 id="judul-genre">Genre</h3>
+                                        <p>Tandai <b>satu</b> genre utama; menandai yang baru melepas tanda sebelumnya.</p>
+                                    </div>
+                                    <div class="k-repeater-tools">
+                                        <span class="k-count"><b data-repeater-count>01</b> baris</span>
+                                        <button type="button" class="k-btn-mini" data-repeater-add>TAMBAH GENRE</button>
+                                    </div>
+                                </header>
+                                <p class="k-max-hint" data-repeater-max hidden>Batas 12 genre sudah tercapai.</p>
+                                <div class="k-repeater-labels" aria-hidden="true"><span></span><span>GENRE</span><span>UTAMA</span><span></span></div>
+                                <div class="k-repeater-rows" data-repeater-rows>
+                                    <div class="k-row">
+                                        <span class="k-row-ord" aria-hidden="true">01</span>
+                                        <div class="k-cell">
+                                            <input type="text" class="form-control-n" maxlength="60"
+                                                data-bind="genre.nama" placeholder="mis. Hardcore" list="saran-genre" aria-label="Genre">
+                                        </div>
+                                        <div class="k-cell k-cell--check">
+                                            <label class="k-check"><input type="checkbox" data-bind="genre.utama" data-genre-primary><span>Utama</span></label>
+                                        </div>
+                                        <div class="k-row-actions">
+                                            <button type="button" class="k-row-remove" aria-label="Hapus genre">✕</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <template data-repeater-template>
+                                    <div class="k-row">
+                                        <span class="k-row-ord" aria-hidden="true"></span>
+                                        <div class="k-cell">
+                                            <input type="text" class="form-control-n" maxlength="60"
+                                                data-bind="genre.nama" placeholder="mis. Hardcore" list="saran-genre" aria-label="Genre">
+                                        </div>
+                                        <div class="k-cell k-cell--check">
+                                            <label class="k-check"><input type="checkbox" data-bind="genre.utama" data-genre-primary><span>Utama</span></label>
+                                        </div>
+                                        <div class="k-row-actions">
+                                            <button type="button" class="k-row-remove" aria-label="Hapus genre">✕</button>
+                                        </div>
+                                    </div>
+                                </template>
+                            </section>
+                        </section>
+
+                        <!-- ============ 03 TRACKLIST ============ -->
+                        <section class="k-form-section" id="bagian-trek" aria-labelledby="judul-trek">
+                            <header class="k-form-head">
+                                <span class="k-form-num">03</span>
+                                <div>
+                                    <h2 id="judul-trek">TRACKLIST.</h2>
+                                    <p>Urutan baris = urutan trek. Durasi ditulis <b>mm:ss</b> — "3:45" maupun "225" sama-sama dibaca 3 menit 45 detik.</p>
+                                </div>
+                            </header>
+
+                            <section class="k-repeater k-repeater--song" data-repeater="trek" data-max="60" aria-labelledby="judul-lagu">
+                                <header class="k-repeater-head">
+                                    <div>
+                                        <h3 id="judul-lagu">Trek</h3>
+                                        <p>Tiap trek boleh membawa satu berkas audio — opsional, maksimal 10 MB.</p>
+                                    </div>
+                                    <div class="k-repeater-tools">
+                                        <span class="k-count"><b data-repeater-count>01</b> baris</span>
+                                        <span class="k-runtime">TOTAL <b data-runtime-total>--:--</b></span>
+                                        <button type="button" class="k-btn-mini k-btn-mini--ghost" data-renumber>URUTKAN 1..n</button>
+                                        <button type="button" class="k-btn-mini" data-repeater-add>TAMBAH TREK</button>
+                                    </div>
+                                </header>
+                                <p class="k-max-hint" data-repeater-max hidden>Batas 60 trek sudah tercapai.</p>
+                                <p class="k-dup" role="alert" data-track-dup hidden></p>
+
+                                <div class="k-repeater-labels k-repeater-labels--song" aria-hidden="true">
+                                    <span>NO</span><span>JUDUL</span><span>ARTIS TAMU</span><span>DURASI</span><span></span>
+                                </div>
+
+                                <div class="k-repeater-rows" data-repeater-rows>
+                                    <div class="k-row k-row--song">
+                                        <div class="k-cell k-cell--no">
+                                            <input type="number" class="form-control-n k-input-short" data-bind="trek.no"
+                                                min="1" max="99" inputmode="numeric" value="1" aria-label="Nomor trek">
+                                        </div>
+                                        <div class="k-cell">
+                                            <input type="text" class="form-control-n" maxlength="200"
+                                                data-bind="trek.judul" placeholder="Judul trek" aria-label="Judul trek">
+                                        </div>
+                                        <div class="k-cell">
+                                            <input type="text" class="form-control-n" maxlength="200"
+                                                data-bind="trek.artisTamu" placeholder="mis. tamu vokal" aria-label="Artis tamu">
+                                        </div>
+                                        <div class="k-cell k-cell--durasi">
+                                            <input type="text" class="form-control-n k-input-short" maxlength="7"
+                                                inputmode="numeric" data-bind="trek.durasi" placeholder="03:45"
+                                                data-durasi aria-label="Durasi trek">
+                                        </div>
+                                        <div class="k-row-actions">
+                                            <button type="button" class="k-row-move" data-move="-1" aria-label="Geser ke atas">▲</button>
+                                            <button type="button" class="k-row-move" data-move="1" aria-label="Geser ke bawah">▼</button>
+                                            <button type="button" class="k-row-remove" aria-label="Hapus trek">✕</button>
+                                        </div>
+                                        <div class="k-cell k-cell--full">
+                                            <details class="k-details">
+                                                <summary>AUDIO TREK <span class="k-flag k-flag--opsional">opsional</span></summary>
+                                                <input type="file" class="form-control-n" accept=".mp3,.flac,.wav,audio/*"
+                                                    data-bind="trek.audio" data-audio aria-label="Berkas audio trek">
+                                                <p class="k-file-info" data-file-info hidden></p>
+                                                <p class="k-error" data-file-error hidden></p>
+                                            </details>
+                                        </div>
+                                        <div class="k-cell k-cell--full">
+                                            <details class="k-details">
+                                                <summary>LIRIK</summary>
+                                                <textarea rows="3" class="form-control-n" maxlength="20000"
+                                                    data-bind="trek.lirik" placeholder="Tempel lirik lengkap bila ada di sumber (opsional)"
+                                                    aria-label="Lirik trek"></textarea>
+                                            </details>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <template data-repeater-template>
+                                    <div class="k-row k-row--song">
+                                        <div class="k-cell k-cell--no">
+                                            <input type="number" class="form-control-n k-input-short" data-bind="trek.no"
+                                                min="1" max="99" inputmode="numeric" aria-label="Nomor trek">
+                                        </div>
+                                        <div class="k-cell">
+                                            <input type="text" class="form-control-n" maxlength="200"
+                                                data-bind="trek.judul" placeholder="Judul trek" aria-label="Judul trek">
+                                        </div>
+                                        <div class="k-cell">
+                                            <input type="text" class="form-control-n" maxlength="200"
+                                                data-bind="trek.artisTamu" placeholder="mis. tamu vokal" aria-label="Artis tamu">
+                                        </div>
+                                        <div class="k-cell k-cell--durasi">
+                                            <input type="text" class="form-control-n k-input-short" maxlength="7"
+                                                inputmode="numeric" data-bind="trek.durasi" placeholder="03:45"
+                                                data-durasi aria-label="Durasi trek">
+                                        </div>
+                                        <div class="k-row-actions">
+                                            <button type="button" class="k-row-move" data-move="-1" aria-label="Geser ke atas">▲</button>
+                                            <button type="button" class="k-row-move" data-move="1" aria-label="Geser ke bawah">▼</button>
+                                            <button type="button" class="k-row-remove" aria-label="Hapus trek">✕</button>
+                                        </div>
+                                        <div class="k-cell k-cell--full">
+                                            <details class="k-details">
+                                                <summary>AUDIO TREK <span class="k-flag k-flag--opsional">opsional</span></summary>
+                                                <input type="file" class="form-control-n" accept=".mp3,.flac,.wav,audio/*"
+                                                    data-bind="trek.audio" data-audio aria-label="Berkas audio trek">
+                                                <p class="k-file-info" data-file-info hidden></p>
+                                                <p class="k-error" data-file-error hidden></p>
+                                            </details>
+                                        </div>
+                                        <div class="k-cell k-cell--full">
+                                            <details class="k-details">
+                                                <summary>LIRIK</summary>
+                                                <textarea rows="3" class="form-control-n" maxlength="20000"
+                                                    data-bind="trek.lirik" placeholder="Tempel lirik lengkap bila ada di sumber (opsional)"
+                                                    aria-label="Lirik trek"></textarea>
+                                            </details>
+                                        </div>
+                                    </div>
+                                </template>
+
+                                <p class="k-hint">Trek tanpa judul diabaikan. Audio trek yang dihapus ikut terbuang.</p>
+                            </section>
+                        </section>
+
+                        <!-- ============ 04 MEDIA ============ -->
+                        <section class="k-form-section" id="bagian-media" aria-labelledby="judul-media">
+                            <header class="k-form-head">
+                                <span class="k-form-num">04</span>
+                                <div>
+                                    <h2 id="judul-media">MEDIA.</h2>
+                                    <p>Sampul, scan, dan flyer. Gambar dikompres di peramban sebelum dikirim — berkas aslinya tidak ikut terkirim.</p>
+                                </div>
+                            </header>
+
+                            <section class="k-repeater" data-repeater="media" data-max="10" aria-labelledby="judul-media-baru">
+                                <header class="k-repeater-head">
+                                    <div>
+                                        <h3 id="judul-media-baru">Tambah media</h3>
+                                        <p>jpg, png, webp, atau avif, maksimal 8 MB per berkas. Keterangan dipakai sebagai teks alternatif.</p>
+                                    </div>
+                                    <div class="k-repeater-tools">
+                                        <span class="k-count"><b data-repeater-count>01</b> baris</span>
+                                        <button type="button" class="k-btn-mini" data-repeater-add>TAMBAH BARIS</button>
+                                    </div>
+                                </header>
+                                <p class="k-max-hint" data-repeater-max hidden>Batas 10 berkas sudah tercapai.</p>
+                                <div class="k-repeater-labels" aria-hidden="true"><span></span><span>JENIS</span><span>KETERANGAN</span><span>KREDIT</span><span></span></div>
+                                <div class="k-repeater-rows" data-repeater-rows>
+                                    <div class="k-row k-row--media">
+                                        <span class="k-row-ord" aria-hidden="true">01</span>
+                                        <div class="k-cell">
+                                            <select class="form-select form-control-n" data-bind="media.jenis" aria-label="Jenis media">
+                                                <option value="sampul_depan">Sampul depan</option>
+                                                <option value="sampul_belakang">Sampul belakang</option>
+                                                <option value="kaset_sisi_a">Kaset sisi A</option>
+                                                <option value="kaset_sisi_b">Kaset sisi B</option>
+                                                <option value="kaset_penuh">Kaset penuh</option>
+                                                <option value="cd_penuh">CD penuh</option>
+                                                <option value="piringan_hitam">Piringan hitam</option>
+                                                <option value="flyer_gig">Flyer gig</option>
+                                                <option value="foto_band">Foto band</option>
+                                                <option value="scan_zine">Scan zine</option>
+                                                <option value="lainnya">Lainnya</option>
+                                            </select>
+                                        </div>
+                                        <div class="k-cell">
+                                            <input type="text" class="form-control-n" maxlength="200"
+                                                data-bind="media.keterangan" placeholder="mis. sampul depan, rilisan pertama" aria-label="Keterangan media">
+                                        </div>
+                                        <div class="k-cell">
+                                            <input type="text" class="form-control-n" maxlength="200"
+                                                data-bind="media.kredit" placeholder="mis. koleksi Budi" aria-label="Kredit media">
+                                        </div>
+                                        <div class="k-cell k-cell--full">
+                                            <div class="k-file">
+                                                <input type="file" accept="image/jpeg,image/png,image/webp,image/avif"
+                                                    data-bind="media.berkas" data-media-file aria-label="Berkas media">
+                                                <div class="k-file-preview" data-preview hidden>
+                                                    <img alt="" data-preview-img>
+                                                    <div class="k-file-meta">
+                                                        <span data-file-name></span>
+                                                        <span data-file-size></span>
+                                                        <label class="k-check k-check--inline"><input type="checkbox" data-preview-remove><span>Hapus</span></label>
+                                                    </div>
+                                                </div>
+                                                <p class="k-error" data-file-error hidden></p>
+                                            </div>
+                                        </div>
+                                        <div class="k-row-actions k-row-actions--abs">
+                                            <button type="button" class="k-row-remove" aria-label="Hapus media">✕</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <template data-repeater-template>
+                                    <div class="k-row k-row--media">
+                                        <span class="k-row-ord" aria-hidden="true"></span>
+                                        <div class="k-cell">
+                                            <select class="form-select form-control-n" data-bind="media.jenis" aria-label="Jenis media">
+                                                <option value="sampul_depan">Sampul depan</option>
+                                                <option value="sampul_belakang">Sampul belakang</option>
+                                                <option value="kaset_sisi_a">Kaset sisi A</option>
+                                                <option value="kaset_sisi_b">Kaset sisi B</option>
+                                                <option value="kaset_penuh">Kaset penuh</option>
+                                                <option value="cd_penuh">CD penuh</option>
+                                                <option value="piringan_hitam">Piringan hitam</option>
+                                                <option value="flyer_gig">Flyer gig</option>
+                                                <option value="foto_band">Foto band</option>
+                                                <option value="scan_zine">Scan zine</option>
+                                                <option value="lainnya">Lainnya</option>
+                                            </select>
+                                        </div>
+                                        <div class="k-cell">
+                                            <input type="text" class="form-control-n" maxlength="200"
+                                                data-bind="media.keterangan" placeholder="mis. sampul depan, rilisan pertama" aria-label="Keterangan media">
+                                        </div>
+                                        <div class="k-cell">
+                                            <input type="text" class="form-control-n" maxlength="200"
+                                                data-bind="media.kredit" placeholder="mis. koleksi Budi" aria-label="Kredit media">
+                                        </div>
+                                        <div class="k-cell k-cell--full">
+                                            <div class="k-file">
+                                                <input type="file" accept="image/jpeg,image/png,image/webp,image/avif"
+                                                    data-bind="media.berkas" data-media-file aria-label="Berkas media">
+                                                <div class="k-file-preview" data-preview hidden>
+                                                    <img alt="" data-preview-img>
+                                                    <div class="k-file-meta">
+                                                        <span data-file-name></span>
+                                                        <span data-file-size></span>
+                                                        <label class="k-check k-check--inline"><input type="checkbox" data-preview-remove><span>Hapus</span></label>
+                                                    </div>
+                                                </div>
+                                                <p class="k-error" data-file-error hidden></p>
+                                            </div>
+                                        </div>
+                                        <div class="k-row-actions k-row-actions--abs">
+                                            <button type="button" class="k-row-remove" aria-label="Hapus media">✕</button>
+                                        </div>
+                                    </div>
+                                </template>
+                            </section>
+                        </section>
+
+                        <!-- ============ 05 SUMBER ============ -->
+                        <section class="k-form-section" id="bagian-sumber" aria-labelledby="judul-sumber">
+                            <header class="k-form-head">
+                                <span class="k-form-num">05</span>
+                                <div>
+                                    <h2 id="judul-sumber">SUMBER &amp; PROVENANCE.</h2>
+                                    <p>Dari mana isian ini diketahui. Tanpa sumber, entri tetap boleh disimpan — tapi tidak bisa diperiksa ulang.</p>
+                                </div>
+                            </header>
+
+                            <section class="k-repeater" data-repeater="sumber" data-max="20" aria-labelledby="judul-sumber-baru">
+                                <header class="k-repeater-head">
+                                    <div>
+                                        <h3 id="judul-sumber-baru">Sumber</h3>
+                                        <p>Satu baris = satu sumber. Baris tanpa jenis diabaikan.</p>
+                                    </div>
+                                    <div class="k-repeater-tools">
+                                        <span class="k-count"><b data-repeater-count>01</b> baris</span>
+                                        <button type="button" class="k-btn-mini" data-repeater-add>TAMBAH SUMBER</button>
+                                    </div>
+                                </header>
+                                <p class="k-max-hint" data-repeater-max hidden>Batas 20 sumber sudah tercapai.</p>
+                                <div class="k-repeater-labels" aria-hidden="true"><span></span><span>JENIS</span><span>JUDUL</span><span>TAUTAN</span><span>PEMILIK</span><span></span></div>
+                                <div class="k-repeater-rows" data-repeater-rows>
+                                    <div class="k-row k-row--sumber">
+                                        <span class="k-row-ord" aria-hidden="true">01</span>
+                                        <div class="k-cell">
+                                            <select class="form-select form-control-n" data-bind="sumber.jenis" aria-label="Jenis sumber">
+                                                <option value="">— pilih jenis —</option>
+                                                <option value="kolektor_pribadi">Koleksi pribadi</option>
+                                                <option value="wawancara">Wawancara</option>
+                                                <option value="zine">Zine</option>
+                                                <option value="situs_resmi">Situs resmi</option>
+                                                <option value="media_massa">Media massa</option>
+                                                <option value="arsip_lokal">Arsip lokal</option>
+                                                <option value="linernotes">Linernotes</option>
+                                                <option value="flyer_gig">Flyer gig</option>
+                                                <option value="lainnya">Lainnya</option>
+                                            </select>
+                                        </div>
+                                        <div class="k-cell">
+                                            <input type="text" class="form-control-n" maxlength="200"
+                                                data-bind="sumber.judulSumber" placeholder="mis. wawancara di zine #4" aria-label="Judul sumber">
+                                        </div>
+                                        <div class="k-cell">
+                                            <input type="url" class="form-control-n" maxlength="500"
+                                                data-bind="sumber.tautan" placeholder="https://…" aria-label="Tautan sumber">
+                                        </div>
+                                        <div class="k-cell">
+                                            <input type="text" class="form-control-n" maxlength="120"
+                                                data-bind="sumber.pemilik" placeholder="mis. koleksi pribadi Budi" aria-label="Pemilik koleksi">
+                                        </div>
+                                        <div class="k-row-actions">
+                                            <button type="button" class="k-row-remove" aria-label="Hapus sumber">✕</button>
+                                        </div>
+                                        <div class="k-cell k-cell--full">
+                                            <textarea rows="2" class="form-control-n" maxlength="1000"
+                                                data-bind="sumber.catatan" aria-label="Catatan sumber"
+                                                placeholder="Apa yang dikatakan sumber ini, dan bagian mana yang dipakai untuk entri"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <template data-repeater-template>
+                                    <div class="k-row k-row--sumber">
+                                        <span class="k-row-ord" aria-hidden="true"></span>
+                                        <div class="k-cell">
+                                            <select class="form-select form-control-n" data-bind="sumber.jenis" aria-label="Jenis sumber">
+                                                <option value="">— pilih jenis —</option>
+                                                <option value="kolektor_pribadi">Koleksi pribadi</option>
+                                                <option value="wawancara">Wawancara</option>
+                                                <option value="zine">Zine</option>
+                                                <option value="situs_resmi">Situs resmi</option>
+                                                <option value="media_massa">Media massa</option>
+                                                <option value="arsip_lokal">Arsip lokal</option>
+                                                <option value="linernotes">Linernotes</option>
+                                                <option value="flyer_gig">Flyer gig</option>
+                                                <option value="lainnya">Lainnya</option>
+                                            </select>
+                                        </div>
+                                        <div class="k-cell">
+                                            <input type="text" class="form-control-n" maxlength="200"
+                                                data-bind="sumber.judulSumber" placeholder="mis. wawancara di zine #4" aria-label="Judul sumber">
+                                        </div>
+                                        <div class="k-cell">
+                                            <input type="url" class="form-control-n" maxlength="500"
+                                                data-bind="sumber.tautan" placeholder="https://…" aria-label="Tautan sumber">
+                                        </div>
+                                        <div class="k-cell">
+                                            <input type="text" class="form-control-n" maxlength="120"
+                                                data-bind="sumber.pemilik" placeholder="mis. koleksi pribadi Budi" aria-label="Pemilik koleksi">
+                                        </div>
+                                        <div class="k-row-actions">
+                                            <button type="button" class="k-row-remove" aria-label="Hapus sumber">✕</button>
+                                        </div>
+                                        <div class="k-cell k-cell--full">
+                                            <textarea rows="2" class="form-control-n" maxlength="1000"
+                                                data-bind="sumber.catatan" aria-label="Catatan sumber"
+                                                placeholder="Apa yang dikatakan sumber ini, dan bagian mana yang dipakai untuk entri"></textarea>
+                                        </div>
+                                    </div>
+                                </template>
+                            </section>
+
+                            <div class="k-field">
+                                <label for="f-catatan">CATATAN UNTUK KURATOR <span class="k-optional">(opsional)</span></label>
+                                <textarea id="f-catatan" name="catatan" rows="3" class="form-control-n"
+                                    maxlength="1000" data-bind="catatan"
+                                    placeholder="Ada yang perluirmingatkan soal hak cipta, kondisi cetakan, atau kebingungan lain?"></textarea>
+                            </div>
+                        </section>
+
+                        <!-- ============ PENGIRIM ============ -->
+                        <section class="k-form-section" id="bagian-pengirim" aria-labelledby="judul-pengirim">
+                            <header class="k-form-head">
+                                <span class="k-form-num">06</span>
+                                <div>
+                                    <h2 id="judul-pengirim">PENGIRIM.</h2>
+                                    <p>Supaya kurator bisa menanyakan balik kalau ada yang meragukan.</p>
+                                </div>
+                            </header>
+
+                            <div class="k-grid">
+                                <div class="k-field">
+                                    <label for="f-nama">NAMA <span aria-hidden="true">*</span></label>
+                                    <input type="text" id="f-nama" name="nama" class="form-control-n" required
+                                        maxlength="120" autocomplete="name" placeholder="Siapa kamu"
+                                        data-bind="pengirim.nama">
+                                    <p class="k-error" data-error-for="nama" hidden></p>
+                                </div>
+                                <div class="k-field">
+                                    <label for="f-kontak">EMAIL ATAU TELEPON <span aria-hidden="true">*</span></label>
+                                    <input type="text" id="f-kontak" name="kontak" class="form-control-n" required
+                                        maxlength="200" autocomplete="email" placeholder="kamu@email.com atau 08xx"
+                                        data-bind="pengirim.kontak">
+                                    <p class="k-error" data-error-for="kontak" hidden></p>
+                                </div>
+                            </div>
+                        </section>
+
+                        <div class="k-actions" id="aksi-simpan">
+                            <div class="k-actions-left">
+                                <span class="k-save-note" data-save-note
+                                    data-note-idle="ENTRI BARU LAHIR SEBAGAI DRAF DAN BELUM TAYANG"
+                                    data-note-dirty="ADA PERUBAHAN BELUM DIKIRIM">ENTRI BARU LAHIR SEBAGAI DRAF DAN BELUM TAYANG</span>
+                                <a href="../rilisan/index.html" class="k-btn-ghost">BATAL</a>
+                            </div>
+                            <button type="submit" class="btn-acid" id="tombolKirim">
+                                KIRIM KE KURATOR
+                                <i class="icon ph ph-check" style="font-size:17px" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- ============ SIDEBAR ============ -->
+                    <aside class="k-sidebar">
+                        <nav class="k-nav" aria-label="Daftar isi form">
+                            <span class="mono-label">DAFTAR ISI</span>
+                            <a href="#bagian-identitas" data-nav-item="bagian-identitas"><b>01</b><span>Identitas</span></a>
+                            <a href="#bagian-kredit" data-nav-item="bagian-kredit"><b>02</b><span>Artis &amp; genre</span></a>
+                            <a href="#bagian-trek" data-nav-item="bagian-trek"><b>03</b><span>Tracklist</span></a>
+                            <a href="#bagian-media" data-nav-item="bagian-media"><b>04</b><span>Media</span></a>
+                            <a href="#bagian-sumber" data-nav-item="bagian-sumber"><b>05</b><span>Sumber</span></a>
+                            <a href="#bagian-pengirim" data-nav-item="bagian-pengirim"><b>06</b><span>Pengirim</span></a>
+                            <a href="#aksi-simpan" data-nav-item="aksi-simpan"><b>→</b><span>Kirim</span></a>
+                        </nav>
+
+                        <div class="k-progress">
+                            <span class="mono-label">RINGKASAN</span>
+                            <div><strong data-ringkas-trek>00</strong><span>TREK<br>TERISI</span></div>
+                            <p>Jumlah trek yang sudah punya judul. Baris kosong diabaikan.</p>
+                        </div>
+
+                        <div class="k-checks">
+                            <span class="mono-label">SEBELUM MENGIRIM</span>
+                            <div><i class="icon ph ph-check" aria-hidden="true"></i><span>Nomor trek unik dan urut dari atas ke bawah.</span></div>
+                            <div><i class="icon ph ph-check" aria-hidden="true"></i><span>Durasi ditulis mm:ss — konversinya otomatis.</span></div>
+                            <div><i class="icon ph ph-check" aria-hidden="true"></i><span>Foto punya keterangan dan kredit sumbernya.</span></div>
+                            <div><i class="icon ph ph-check" aria-hidden="true"></i><span>Lirik mengikuti kebijakan 17.1a: satu bait tanpa izin, atau teks lengkap dengan sumber.</span></div>
+                        </div>
+
+                        <div class="k-foot">
+                            <i class="icon ph ph-file" aria-hidden="true"></i>
+                            <strong>Setelah dikirim</strong>
+                            <p>Kurator memeriksa lalu memberi nomor referensi. Entri tayang di situs publik hanya setelah diverifikasi — belum tentu diterima utuh.</p>
+                        </div>
+                    </aside>
+                </div>
+            </form>
+
+            <!-- ============ HASIL ============ -->
+            <div class="k-hasil" data-hasil hidden>
+                <div class="k-hasil-card">
+                    <span class="mono-label">TERIMA KASIH</span>
+                    <h2 data-hasil-judul>Pengiriman diterima.</h2>
+                    <p data-hasil-pesan></p>
+                    <div class="k-ref" data-hasil-ref></div>
+                    <div class="k-hasil-meta" data-hasil-meta></div>
+                    <div class="k-hasil-actions">
+                        <a href="../rilisan/index.html" class="btn-acid">LIHAT ARSIP PUBLIK</a>
+                        <button type="button" class="k-btn-ghost" data-kirim-lagi>KIRIM RILISAN LAIN</button>
+                    </div>
+                    <p class="k-hasil-catatan" data-hasil-catatan></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer class="footer">
+    <div class="site-container">
+        <div class="footer-top">
+            <div class="footer-mission">
+                <a href="../index.html" class="brand brand--footer"><span class="brand-symbol" aria-hidden="true"><svg viewBox="0 0 52 52" fill="none"><path d="M6 39V14L17 39V14L28 39V14L39 39V14l7 25" stroke="currentColor" stroke-width="5.8" stroke-linecap="square"/></svg></span><span class="brand-type"><strong>NOISE<span>ANTARA</span></strong><small>ARSIP MUSIK BAWAH TANAH</small></span></a>
+                <p>Bunyi boleh berlalu.<br>Jejaknya jangan.</p>
+                <span class="footer-demo">ARSIP TERBUKA • BERSUMBER • 2026</span>
+            </div>
+            <div class="footer-links">
+                <div>
+                    <span>JELAJAHI</span>
+                    <a href="../rilisan/index.html">Rilisan</a>
+                    <a href="../artis/index.html">Artis</a>
+                    <a href="../gig/index.html">Gig &amp; flyer</a>
+                    <a href="../label/index.html">Label</a>
+                    <a href="../scene/index.html">Scene per kota</a>
+                    <a href="../pustaka/index.html">Pustaka</a>
+                </div>
+                <div>
+                    <span>IKUT TERLIBAT</span>
+                    <a href="rilisan.html">Kirim rilisan</a>
+                    <a href="panduan.html">Panduan arsip</a>
+                    <a href="../dibutuhkan/index.html">Yang dibutuhkan</a>
+                    <a href="../laporkan/index.html">Laporkan klaim hak</a>
+                </div>
+                <div>
+                    <span>HAL PENTING</span>
+                    <a href="../kebijakan/index.html">Kebijakan konten</a>
+                    <a href="../privasi/index.html">Privasi</a>
+                    <a href="../ketentuan/index.html">Ketentuan</a>
+                    <a href="../lisensi-konten/index.html">Lisensi konten</a>
+                    <a href="../donasi/index.html">Dukung arsip</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-giant" aria-hidden="true">NOISEANTARA<span>✳</span></div>
+        <div class="footer-bottom">
+            <p>© 2026 NOISEANTARA. DIBANGUN AGAR SEJARAH TIDAK HILANG.</p>
+            <p>INDEPENDEN <span class="footer-cross">✳</span> BERSUMBER <span class="footer-cross">✳</span> UNTUK SEMUA</p>
+            <a href="#main-content">KEMBALI KE ATAS ↑</a>
+        </div>
+    </div>
+</footer>
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index:1080">
+    <div id="siteToast" class="toast site-toast" role="status" aria-live="polite" aria-atomic="true">
+        <div class="toast-body">
+            <span id="siteToastText"></span>
+            <button type="button" class="toast-close" data-bs-dismiss="toast" aria-label="Tutup"><i class="icon ph ph-x" style="font-size:16px" aria-hidden="true"></i></button>
+        </div>
+    </div>
+</div>
+
+<script src="../vendor/bootstrap/bootstrap.bundle.min.js" defer></script>
+<script src="../js/public-ui.js" defer></script>
+<script src="../js/demo.js" defer></script>
+<script src="../assets/kontribusi-config.js"></script>
+<script src="../js/kontribusi-rilisan.js" defer></script>
+</body>
+</html>

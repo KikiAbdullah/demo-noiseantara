@@ -559,41 +559,64 @@ function downloadBlob(blob){
 }
 
 
+// Gambar loading awal sementara menunggu font & aset siap
+// Gunakan font bawaan browser (bukan custom font) agar teks pasti muncul
 ctx.fillStyle=DARK;ctx.fillRect(0,0,W,H);
 ctx.fillStyle=COLORS.lime;ctx.fillRect(0,0,10,H);
-mono('NOISEANTARA / CAPTURE STUDIO',80,130,28,COLORS.lime);
-display('MENYUSUN',80,690,147,PAPER);
-display('JEJAKNYA.',80,830,147,COLORS.lime);
-mono('MENGAMBIL GAMBAR & FONT LOKAL…',80,950,22,PAPER);
+ctx.font='900 28px monospace';
+ctx.fillStyle=COLORS.lime;ctx.textAlign='left';ctx.textBaseline='alphabetic';
+ctx.fillText('NOISEANTARA / CAPTURE STUDIO',80,130);
+ctx.font='900 147px sans-serif';
+ctx.fillStyle=PAPER;ctx.fillText('MENYUSUN',80,690);
+ctx.fillStyle=COLORS.lime;ctx.fillText('JEJAKNYA.',80,830);
+ctx.font='700 22px monospace';ctx.fillStyle=PAPER;
+ctx.fillText('MENGAMBIL GAMBAR & FONT LOKAL\u2026',80,950);
 
-const query=new URLSearchParams(location.search);
-changeType(query.get('tipe')||'rilisan',query.get('slug')||'');
-typeField.addEventListener('change',()=>changeType(typeField.value));
-entryField.addEventListener('change',()=>refresh());
-document.getElementById('safeButton').addEventListener('click',event=>{
-  const button=event.currentTarget;
-  const visible=document.getElementById('captureFrame').classList.toggle('show-safe');
-  button.setAttribute('aria-pressed',String(visible));
-  button.firstChild.textContent=visible?'SEMBUNYIKAN AREA AMAN ':'LIHAT AREA AMAN ';
-});
-downloadButton.addEventListener('click',async()=>{
-  try{downloadButton.disabled=true;setStatus('Menyiapkan berkas PNG resolusi penuh…');const blob=await toPngBlob();downloadBlob(blob);}
-  catch(error){console.error(error);setStatus('PNG gagal dibuat. Pastikan aset gambar berada pada server yang sama.',true);}
-  finally{downloadButton.disabled=!ready;}
-});
-shareButton.addEventListener('click',async()=>{
-  try{
-    shareButton.disabled=true;
-    const blob=await toPngBlob();
-    const file=new File([blob],fileName(),{type:'image/png'});
-    if(navigator.share && navigator.canShare?.({files:[file]})){
-      await navigator.share({files:[file],title:`Noiseantara / ${itemTitle(chosenType(),activeItem)}`});
-      setStatus('Berkas gambar dibagikan melalui menu perangkat.');
-    }else{
-      downloadBlob(blob);
-      setStatus('Berbagi berkas tidak tersedia di browser ini. PNG diunduh untuk diunggah manual.');
-    }
-  }catch(error){
-    if(error?.name!=='AbortError'){console.error(error);setStatus('Tidak dapat membuka menu berbagi. Coba Unduh PNG.',true);}
-  }finally{shareButton.disabled=!ready;}
-});
+function initCapture(){
+  typeField.addEventListener('change',()=>changeType(typeField.value));
+  entryField.addEventListener('change',()=>refresh());
+  document.getElementById('safeButton').addEventListener('click',event=>{
+    const button=event.currentTarget;
+    const visible=document.getElementById('captureFrame').classList.toggle('show-safe');
+    button.setAttribute('aria-pressed',String(visible));
+    button.firstChild.textContent=visible?'SEMBUNYIKAN AREA AMAN ':'LIHAT AREA AMAN ';
+  });
+  downloadButton.addEventListener('click',async()=>{
+    try{downloadButton.disabled=true;setStatus('Menyiapkan berkas PNG resolusi penuh…');const blob=await toPngBlob();downloadBlob(blob);}
+    catch(error){console.error(error);setStatus('PNG gagal dibuat. Pastikan aset gambar berada pada server yang sama.',true);}
+    finally{downloadButton.disabled=!ready;}
+  });
+  shareButton.addEventListener('click',async()=>{
+    try{
+      shareButton.disabled=true;
+      const blob=await toPngBlob();
+      const file=new File([blob],fileName(),{type:'image/png'});
+      if(navigator.share && navigator.canShare?.({files:[file]})){
+        await navigator.share({files:[file],title:`Noiseantara / ${itemTitle(chosenType(),activeItem)}`});
+        setStatus('Berkas gambar dibagikan melalui menu perangkat.');
+      }else{
+        downloadBlob(blob);
+        setStatus('Berbagi berkas tidak tersedia di browser ini. PNG diunduh untuk diunggah manual.');
+      }
+    }catch(error){
+      if(error?.name!=='AbortError'){console.error(error);setStatus('Tidak dapat membuka menu berbagi. Coba Unduh PNG.',true);}
+    }finally{shareButton.disabled=!ready;}
+  });
+
+  // Tunggu font custom selesai dimuat SEBELUM render poster pertama
+  // Ini penyebab utama "harus refresh dulu": saat pertama buka, font belum
+  // siap sehingga canvas.toBlob/render gagal atau pakai font fallback.
+  // Setelah refresh, font sudah di-cache browser sehingga terlihat normal.
+  fontsReady.then(()=>{
+    const query=new URLSearchParams(location.search);
+    changeType(query.get('tipe')||'rilisan',query.get('slug')||'');
+  });
+}
+
+// Jalankan setelah seluruh resource halaman (font, gambar) selesai dimuat.
+// Jika halaman sudah complete (misal navigasi back/forward), langsung jalankan.
+if(document.readyState==='complete'){
+  initCapture();
+}else{
+  window.addEventListener('load',initCapture,{once:true});
+}

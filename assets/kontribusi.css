@@ -1,0 +1,950 @@
+/* =============================================================================
+ * KONTRIBUSI - GAYA FORM KIRIM RILISAN
+ * =============================================================================
+ *
+ * Halaman kontribusi/rilisan.html memakai bentuk yang sama dengan form kurator
+ * (admin/releases/create): lima bagian bernomor, sidebar daftar isi, repeater
+ * selebar halaman. Bedanya hanya konteks visual - palet dan tipografi diambil
+ * dari styles.css situs publik, bukan dari admin-app.css, karena halaman ini
+ * memang dilihat orang umum, bukan kurator.
+ *
+ * Semua kelas diawali `k-` supaya tidak bentrok dengan kelas yang sudah ada di
+ * styles.css/extras.css. Tidak ada satu pun kelas admin yang dipakai ulang di
+ * sini: `repeater`, `field`, `btn-mini`, `form-section` milik panel admin dan
+ * tampilannya beda jauh dari situs publik.
+ * ========================================================================== */
+
+.kontribusi-page {
+    background: var(--cream);
+    padding: 40px 0 110px;
+}
+
+/* Jerat bot. disembunyikan dengan positioning, bukan `display:none`, karena
+   beberapa bot skips field yang tidak punya layout. */
+.perangkap {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
+
+/* ---------------------------------------------------------------------------
+ * LAYOUT
+ * ------------------------------------------------------------------------- */
+
+.kontribusi-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 264px;
+    gap: clamp(34px, 4vw, 62px);
+    align-items: start;
+}
+
+.kontribusi-main {
+    min-width: 0;
+}
+
+.kontribusi-form[hidden] {
+    display: none;
+}
+
+
+/* ---------------------------------------------------------------------------
+ * BAGIAN FORM
+ * ------------------------------------------------------------------------- */
+
+.k-form-section {
+    background: #f4f3ea;
+    border: 1px solid var(--line-cream);
+    border-left: 5px solid var(--ink);
+    padding: clamp(26px, 3.4vw, 46px);
+    margin-bottom: 34px;
+}
+
+.k-form-head {
+    display: flex;
+    gap: 22px;
+    align-items: flex-start;
+    padding-bottom: 26px;
+    margin-bottom: 30px;
+    border-bottom: 2px solid var(--ink);
+}
+
+.k-form-num {
+    font: 900 clamp(38px, 4vw, 58px)/0.8 var(--display);
+    color: #c3c7b6;
+    flex: none;
+}
+
+.k-form-head h2 {
+    font: 800 clamp(28px, 2.9vw, 43px)/0.95 var(--display);
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    margin: 0 0 8px;
+}
+
+.k-form-head p {
+    font-size: 13px;
+    line-height: 1.65;
+    color: #5b6555;
+    margin: 0;
+    max-width: 62ch;
+}
+
+.k-form-head p b {
+    color: var(--ink);
+}
+
+
+/* ---------------------------------------------------------------------------
+ * FIELD
+ * ------------------------------------------------------------------------- */
+
+.k-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px;
+}
+
+.k-field {
+    margin-bottom: 22px;
+}
+
+.k-field > label {
+    display: block;
+    font: 700 10px/1.5 var(--mono);
+    letter-spacing: 0.035em;
+    margin-bottom: 9px;
+    color: #40473c;
+}
+
+.k-field > label span[aria-hidden] {
+    color: #b54c34;
+}
+
+.k-optional {
+    color: #7c8574;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+}
+
+.k-hint {
+    font: 400 11px/1.6 var(--mono);
+    color: #6d7767;
+    margin: 8px 0 0;
+}
+
+.k-error {
+    font: 400 11px/1.55 var(--mono);
+    color: #a8422a;
+    margin: 8px 0 0;
+    display: block;
+}
+
+.k-error::before {
+    content: "⚠ ";
+}
+
+/* isian yang gagal validasi. Ditandai lewat kelas, bukan atribut HTML, supaya
+   peramban yang sudah pernah menolak submission bisa dibersihkan ulang. */
+.k-invalid {
+    border-color: #b54c34 !important;
+    background: #f6e9e4 !important;
+}
+
+
+/* ---------------------------------------------------------------------------
+ * CHIP PILIHAN GANDA
+ * ------------------------------------------------------------------------- */
+
+.k-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+}
+
+.k-chip,
+.k-check {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font: 700 10px var(--mono);
+    padding: 10px 13px;
+    border: 1px solid #bfc3b4;
+    background: #eeede3;
+    color: #3d4638;
+}
+
+.k-chip:hover,
+.k-check:hover {
+    border-color: var(--ink);
+}
+
+.k-chip input,
+.k-check input {
+    accent-color: var(--ink);
+    width: 15px;
+    height: 15px;
+    margin: 0;
+}
+
+.k-chip:has(input:checked) {
+    background: var(--acid);
+    border-color: var(--ink);
+}
+
+.k-check {
+    padding: 7px 10px;
+}
+
+.k-check--inline {
+    padding: 4px 8px;
+    font-size: 9px;
+}
+
+
+/* ---------------------------------------------------------------------------
+ * REPEATER
+ * ------------------------------------------------------------------------- */
+
+.k-repeater {
+    border: 1px solid #d0d2c4;
+    background: #eeede3;
+    padding: 20px;
+    margin: 26px 0;
+}
+
+.k-repeater-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    flex-wrap: wrap;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #d0d2c4;
+}
+
+.k-repeater-head h3 {
+    font: 800 22px/1 var(--display);
+    text-transform: uppercase;
+    margin: 0 0 7px;
+}
+
+.k-repeater-head p {
+    font-size: 12px;
+    line-height: 1.6;
+    color: #5d6656;
+    margin: 0;
+    max-width: 58ch;
+}
+
+.k-repeater-tools {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.k-count,
+.k-runtime {
+    font: 700 9px var(--mono);
+    color: #5f6a56;
+    white-space: nowrap;
+}
+
+.k-runtime {
+    padding: 6px 9px;
+    border: 1px solid #c3c7b6;
+    background: #f4f3ea;
+}
+
+.k-runtime b {
+    color: var(--ink);
+}
+
+.k-btn-mini {
+    border: 1px solid var(--ink);
+    background: var(--ink);
+    color: var(--cream);
+    font: 700 9px var(--mono);
+    letter-spacing: 0.03em;
+    padding: 9px 11px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.k-btn-mini:hover:not(:disabled) {
+    background: #3c5a2c;
+    border-color: #3c5a2c;
+}
+
+.k-btn-mini:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+.k-btn-mini--ghost {
+    background: transparent;
+    color: var(--ink);
+}
+
+.k-btn-mini--ghost:hover:not(:disabled) {
+    background: var(--ink);
+    color: var(--cream);
+}
+
+.k-max-hint,
+.k-dup {
+    font: 700 10px/1.5 var(--mono);
+    margin: 13px 0 0;
+    padding: 9px 11px;
+}
+
+.k-max-hint {
+    background: #f6e9e4;
+    color: #8c3a25;
+}
+
+.k-dup {
+    background: #f6e9e4;
+    color: #8c3a25;
+}
+
+/* Baris label - disembunyikan dari pembaca layar, hanya pemandu mata.
+   `aria-hidden` ada di markup-nya supaya tidak diumumkan. */
+.k-repeater-labels {
+    display: grid;
+    grid-template-columns: 30px minmax(0, 1fr) minmax(0, 1fr) 30px;
+    gap: 12px;
+    padding: 15px 0 8px;
+    font: 700 9px var(--mono);
+    letter-spacing: 0.05em;
+    color: #838c7b;
+}
+
+.k-repeater-labels--song {
+    grid-template-columns: 46px minmax(0, 1.5fr) minmax(0, 1fr) 96px 30px;
+}
+
+.k-repeater-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.k-row {
+    display: grid;
+    grid-template-columns: 30px minmax(0, 1fr) minmax(0, 1fr) 30px;
+    gap: 12px;
+    align-items: start;
+    background: #f7f6ee;
+    border: 1px solid #d5d7c9;
+    padding: 13px;
+}
+
+.k-row--song {
+    grid-template-columns: 46px minmax(0, 1.5fr) minmax(0, 1fr) 96px 30px;
+}
+
+.k-row--media,
+.k-row--sumber {
+    position: relative;
+    padding-right: 48px;
+}
+
+.k-row--sumber {
+    grid-template-columns: 30px minmax(0, 1fr) minmax(0, 1.2fr) minmax(0, 1.2fr) minmax(0, 1fr) 30px;
+}
+
+.k-row--media {
+    grid-template-columns: 30px minmax(0, 1fr) minmax(0, 1.2fr) minmax(0, 1fr);
+}
+
+.k-row-ord {
+    font: 700 10px var(--mono);
+    color: #8a9382;
+    padding-top: 11px;
+}
+
+.k-cell {
+    min-width: 0;
+}
+
+.k-cell--grow {
+    grid-column: 2 / span 2;
+}
+
+.k-cell--no,
+.k-cell--durasi {
+    min-width: 0;
+}
+
+.k-cell--check {
+    display: flex;
+    align-items: center;
+}
+
+/* Baris yang punya selinux dari empat (audio, lirik, catatan sumber) harus
+   melintasi seluruh lebar repeater, bukan berhenti di kolom kedua. */
+.k-cell--full {
+    grid-column: 1 / -1;
+    padding-top: 11px;
+    border-top: 1px dashed #d5d7c9;
+    margin-top: 4px;
+}
+
+.k-input-short {
+    text-align: center;
+}
+
+.k-cell--durasi .form-control-n {
+    font-family: var(--mono);
+    letter-spacing: 0.02em;
+}
+
+.k-row-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding-top: 6px;
+}
+
+.k-row-actions--abs {
+    position: absolute;
+    top: 13px;
+    right: 13px;
+}
+
+.k-row-remove,
+.k-row-move {
+    width: 27px;
+    height: 27px;
+    border: 1px solid #c3c7b6;
+    background: transparent;
+    color: #6d7767;
+    font: 700 11px/1 var(--mono);
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    padding: 0;
+}
+
+.k-row-remove:hover,
+.k-row-move:hover {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--cream);
+}
+
+.k-row-remove:hover {
+    background: #8c3a25;
+    border-color: #8c3a25;
+}
+
+
+/* ---------------------------------------------------------------------------
+ * DETAILS (audio, lirik)
+ * ------------------------------------------------------------------------- */
+
+.k-details summary {
+    font: 700 10px var(--mono);
+    letter-spacing: 0.04em;
+    color: #4e5847;
+    cursor: pointer;
+    padding: 5px 0;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.k-details summary:hover {
+    color: var(--ink);
+}
+
+.k-details[open] summary {
+    margin-bottom: 11px;
+}
+
+.k-flag {
+    font: 700 8px var(--mono);
+    padding: 3px 6px;
+    letter-spacing: 0.04em;
+}
+
+.k-flag--opsional {
+    background: #e0e2d3;
+    color: #67715d;
+}
+
+
+/* ---------------------------------------------------------------------------
+ * BERKAS
+ * ------------------------------------------------------------------------- */
+
+.k-file input[type="file"] {
+    padding: 9px;
+    font: 400 11px var(--mono);
+}
+
+.k-file-preview {
+    display: grid;
+    grid-template-columns: 92px minmax(0, 1fr);
+    gap: 15px;
+    align-items: center;
+    margin-top: 12px;
+    padding: 11px;
+    background: #e6e6d9;
+    border: 1px solid #d0d2c4;
+}
+
+.k-file-preview img {
+    width: 92px;
+    height: 92px;
+    object-fit: cover;
+    display: block;
+    background: #d5d7c9;
+}
+
+.k-file-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.k-file-meta span {
+    font: 700 10px var(--mono);
+    color: #4e5847;
+    overflow-wrap: anywhere;
+}
+
+.k-file-info {
+    font: 400 11px/1.6 var(--mono);
+    color: #6d7767;
+    margin: 8px 0 0;
+}
+
+
+/* ---------------------------------------------------------------------------
+ * AKSI
+ * ------------------------------------------------------------------------- */
+
+.k-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+    padding: 26px 0 0;
+    border-top: 2px solid var(--ink);
+}
+
+.k-actions-left {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+}
+
+.k-save-note {
+    font: 700 9px/1.5 var(--mono);
+    letter-spacing: 0.03em;
+    color: #5f6a56;
+    max-width: 46ch;
+}
+
+.k-btn-ghost {
+    border: 1px solid var(--ink);
+    background: transparent;
+    color: var(--ink);
+    font: 700 10px var(--mono);
+    letter-spacing: 0.03em;
+    padding: 12px 15px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.k-btn-ghost:hover {
+    background: var(--ink);
+    color: var(--cream);
+}
+
+.k-actions .btn-acid,
+.k-hasil-actions .btn-acid {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 14px 22px;
+    font: 700 11px var(--mono);
+    letter-spacing: 0.03em;
+    text-decoration: none;
+    cursor: pointer;
+    border: 1px solid var(--acid);
+}
+
+#tombolKirim.is-busy {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+#tombolKirim.is-busy span.kirim-label {
+    font-size: 0;
+}
+
+#tombolKirim.is-busy span.kirim-label::after {
+    content: "MENGIRIM…";
+    font-size: 11px;
+}
+
+
+/* ---------------------------------------------------------------------------
+ * SIDEBAR
+ * ------------------------------------------------------------------------- */
+
+.k-sidebar {
+    position: sticky;
+    top: 118px;
+    display: flex;
+    flex-direction: column;
+    gap: 26px;
+}
+
+.k-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    border-top: 2px solid var(--ink);
+    padding-top: 17px;
+}
+
+.k-nav .mono-label {
+    display: block;
+    margin-bottom: 11px;
+    color: #7c8574;
+}
+
+.k-nav a {
+    display: grid;
+    grid-template-columns: 26px minmax(0, 1fr);
+    gap: 11px;
+    align-items: center;
+    padding: 9px 10px;
+    border-left: 3px solid transparent;
+    color: #4e5847;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.k-nav a b {
+    font: 700 9px var(--mono);
+    color: #8a9382;
+}
+
+.k-nav a:hover {
+    background: #e6e7d8;
+}
+
+.k-nav a.is-active {
+    border-left-color: var(--ink);
+    background: #e3ecd0;
+    color: var(--ink);
+}
+
+.k-nav a.is-active b {
+    color: var(--ink);
+}
+
+.k-progress,
+.k-checks,
+.k-foot {
+    border-top: 1px solid #cfd2c0;
+    padding-top: 17px;
+}
+
+.k-progress .mono-label,
+.k-checks .mono-label {
+    display: block;
+    margin-bottom: 13px;
+    color: #7c8574;
+}
+
+.k-progress > div {
+    display: flex;
+    align-items: baseline;
+    gap: 11px;
+}
+
+.k-progress strong {
+    font: 900 58px/0.8 var(--display);
+    color: #c3c7b6;
+}
+
+.k-progress span {
+    font: 700 9px/1.4 var(--mono);
+    color: #6d7767;
+}
+
+.k-progress p,
+.k-foot p {
+    font: 400 11px/1.65 var(--mono);
+    color: #6d7767;
+    margin: 13px 0 0;
+}
+
+.k-checks > div {
+    display: grid;
+    grid-template-columns: 19px minmax(0, 1fr);
+    gap: 9px;
+    align-items: start;
+    font-size: 11px;
+    line-height: 1.6;
+    color: #4e5847;
+    margin-bottom: 11px;
+}
+
+.k-checks i {
+    color: #7d9c52;
+    font-size: 15px;
+}
+
+.k-foot i {
+    font-size: 21px;
+    color: #8a9382;
+    margin-bottom: 9px;
+    display: block;
+}
+
+.k-foot strong {
+    display: block;
+    font: 700 10px var(--mono);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #4e5847;
+}
+
+
+/* ---------------------------------------------------------------------------
+ * CATATAN ENDPOINT
+ * ------------------------------------------------------------------------- */
+
+.kontribusi-endpoint {
+    border: 1px solid #c9b48a;
+    background: #f3ead9;
+    color: #6b5322;
+    padding: 15px 18px;
+    font: 400 12px/1.7 var(--mono);
+    margin-bottom: 30px;
+}
+
+.kontribusi-endpoint b {
+    font-weight: 700;
+}
+
+.kontribusi-endpoint code {
+    background: #e5d8bd;
+    padding: 1px 5px;
+    font: 700 11px var(--mono);
+    overflow-wrap: anywhere;
+}
+
+
+/* ---------------------------------------------------------------------------
+ * HASIL
+ * ------------------------------------------------------------------------- */
+
+.k-hasil {
+    padding: 20px 0;
+}
+
+.k-hasil[hidden] {
+    display: none;
+}
+
+.k-hasil-card {
+    background: var(--ink);
+    color: var(--cream);
+    border-top: 7px solid var(--acid);
+    padding: clamp(30px, 5vw, 64px);
+}
+
+.k-hasil-card .mono-label {
+    display: block;
+    color: var(--acid);
+    margin-bottom: 15px;
+}
+
+.k-hasil-card h2 {
+    font: 900 clamp(36px, 5vw, 66px)/0.9 var(--display);
+    text-transform: uppercase;
+    margin: 0 0 19px;
+}
+
+.k-hasil-card > p {
+    font-size: 14px;
+    line-height: 1.7;
+    color: #c0c4b8;
+    max-width: 60ch;
+    margin: 0 0 26px;
+}
+
+.k-ref {
+    display: inline-block;
+    font: 700 26px/1 var(--mono);
+    letter-spacing: 0.04em;
+    background: var(--acid);
+    color: var(--ink);
+    padding: 15px 21px;
+    margin-bottom: 26px;
+}
+
+.k-hasil-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 26px;
+    padding: 22px 0;
+    border-top: 1px solid var(--line-dark);
+    border-bottom: 1px solid var(--line-dark);
+    margin-bottom: 30px;
+}
+
+.k-hasil-meta > div {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.k-hasil-meta span {
+    font: 700 9px var(--mono);
+    letter-spacing: 0.05em;
+    color: #9aa393;
+}
+
+.k-hasil-meta strong {
+    font: 700 15px var(--mono);
+    color: var(--cream);
+}
+
+.k-hasil-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.k-hasil-actions .k-btn-ghost {
+    border-color: var(--cream);
+    color: var(--cream);
+}
+
+.k-hasil-actions .k-btn-ghost:hover {
+    background: var(--cream);
+    color: var(--ink);
+}
+
+.k-hasil-catatan {
+    margin: 30px 0 0 !important;
+    font: 400 11px/1.7 var(--mono) !important;
+    color: #8a9382 !important;
+}
+
+
+/* ---------------------------------------------------------------------------
+ * LAYAR KECIL
+ * ------------------------------------------------------------------------- */
+
+@media (max-width: 1080px) {
+    .kontribusi-layout {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .k-sidebar {
+        position: static;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 34px;
+        border-top: 2px solid var(--ink);
+        padding-top: 24px;
+    }
+
+    .k-nav {
+        border-top: 0;
+        padding-top: 0;
+        flex: 1 1 260px;
+    }
+
+    .k-progress,
+    .k-checks,
+    .k-foot {
+        flex: 1 1 210px;
+    }
+}
+
+@media (max-width: 767px) {
+    .kontribusi-page {
+        padding: 24px 0 75px;
+    }
+
+    .k-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .k-form-section {
+        padding: 22px 17px;
+    }
+
+    /* Repeater jadi satu kolom. Baris label disembunyikan karena tidak ada
+       lagi kolom yang sejajar -innersinya sudah/libra jadi tidak relevan. */
+    .k-repeater-labels {
+        display: none;
+    }
+
+    .k-row,
+    .k-row--song,
+    .k-row--sumber,
+    .k-row--media {
+        grid-template-columns: 30px minmax(0, 1fr) 30px;
+        grid-auto-flow: row;
+    }
+
+    .k-cell--grow,
+    .k-cell--full {
+        grid-column: 1 / -1;
+    }
+
+    .k-cell--no {
+        grid-column: 1;
+    }
+
+    .k-row-actions {
+        grid-column: 3;
+        grid-row: 1;
+        flex-direction: row;
+    }
+
+    .k-row-actions--abs {
+        grid-column: auto;
+        grid-row: auto;
+    }
+
+    .k-cell--check {
+        grid-column: 1 / -1;
+    }
+
+    .k-file-preview {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .k-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .k-actions .btn-acid {
+        justify-content: center;
+    }
+}
