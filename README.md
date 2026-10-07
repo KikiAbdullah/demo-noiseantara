@@ -1,7 +1,7 @@
 # Noiseantara — Demo Statis Publik
 
-Situs statis hasil export seluruh halaman publik Noiseantara per **26 Sep 2026**
-(**163 halaman**, data asli database). Siap diunggah ke hosting
+Situs statis hasil export seluruh halaman publik Noiseantara per **07 Oct 2026**
+(**170 halaman**, data asli database). Siap diunggah ke hosting
 gratis seperti GitHub Pages — tanpa server, tanpa database, tanpa build.
 
 ## Cara pasang (GitHub Pages)
@@ -24,16 +24,20 @@ gratis seperti GitHub Pages — tanpa server, tanpa database, tanpa build.
 - `jelajah/`, `linimasa/`, `statistik/`, `dibutuhkan/`, `tentang/`,
   `donasi/`, `tersimpan/`, `capture/`, `cari/` (+ `capture.html`).
 - `kebijakan/`, `privasi/`, `ketentuan/`, `aksesibilitas/`,
-  `lisensi-konten/`, `kode-etik/`, `laporkan/`, `kontribusi/`.
+  `lisensi-konten/`, `kode-etik/`, `laporkan/`,
+  `kontribusi/panduan.html`. Kontribusi kini wajib akun, jadi tidak
+  ada lagi halaman kontribusi untuk tamu — hanya panduan publiknya.
 - `assets/` (CSS/JS/font/gambar), `vendor/` (bootstrap),
-  `js/` (interaksi), `media/` (sampul dari arsip),
+  `js/` (interaksi), `media/` (sampul dari arsip, termasuk varian
+  `thumb`/`medium`/`large`),
   `data/search-index.json` (pencarian offline),
   `data/capture-db.json` (basis Capture Studio).
 
 ## Keterbatasan demo (disengaja & jujur)
 
-- Formulir **kontribusi & laporkan** dinonaktifkan (toast penjelasan).
-- **Login/daftar/dasbor** butuh server — diklik memunculkan penjelasan.
+- Formulir **laporkan** dinonaktifkan (toast penjelasan).
+- **Login/daftar/dasbor/kontribusi** butuh server — diklik memunculkan
+  penjelasan.
 - **Filter** indeks menampilkan seluruh data (filter butuh server).
 - **Pencarian** (`/cari`, saran ⌘K) berjalan **offline** dari indeks lokal.
 - **Tersimpan** & **Capture Studio** penuh di peramban (localStorage +

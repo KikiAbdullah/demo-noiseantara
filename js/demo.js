@@ -1,7 +1,4 @@
-/**
- * Demo statis Noiseantara: resolver URL subpath, pencarian offline,
- * dan penonaktifan jujur fitur server (form POST, login, filter).
- */
+
 (function () {
   'use strict';
   var SRC = (document.currentScript && document.currentScript.src) || '';
@@ -25,14 +22,14 @@
     window.alert(msg);
   }
 
-  // Template URL runtime (scene explorer) → absolutkan ke root demo.
+  
   document.querySelectorAll('[data-scene-url-template]').forEach(function (el) {
     var tpl = el.getAttribute('data-scene-url-template') || '';
     if (tpl.charAt(0) === '/') el.setAttribute('data-scene-url-template', resolve(tpl));
   });
 
-  // URL share/sitasi relatif → absolut penuh (Web Share butuh URL mutlak
-  // yang benar di subpath, mis. /repo/rilisan/x).
+  
+  
   document.querySelectorAll('[data-url]').forEach(function (el) {
     var u = el.getAttribute('data-url') || '';
     if (u.charAt(0) === '.' || (u.charAt(0) !== '/' && u.indexOf('://') === -1 && u.charAt(0) !== '#')) {
@@ -40,7 +37,7 @@
     }
   });
 
-  // Banner: hormati pilihan tutup sebelumnya.
+  
   try {
     if (localStorage.getItem('demo-banner') === 'hide') {
       var b0 = document.getElementById('demoBanner');
@@ -55,7 +52,7 @@
     }
   });
 
-  // Formulir: POST diblokir jujur; filter GET diberi penjelasan.
+  
   document.querySelectorAll('form').forEach(function (f) {
     var m = (f.getAttribute('method') || 'GET').toUpperCase();
     if (m === 'POST') {
@@ -70,7 +67,7 @@
     }
   });
 
-  // Tautan butuh server → penjelasan, bukan 404 buta.
+  
   document.addEventListener('click', function (e) {
     var a = e.target.closest('a[href]');
     if (!a) return;
@@ -81,7 +78,7 @@
     }
   }, true);
 
-  // Pencarian offline dari indeks lokal.
+  
   function loadIndex() {
     if (INDEX) return Promise.resolve(INDEX);
     return fetch(resolve('data/search-index.json')).then(function (r) { return r.json(); }).then(function (d) { INDEX = d; return d; });
@@ -114,7 +111,7 @@
     return _fetch(input, init);
   };
 
-  // Render hasil /cari?q=... dari indeks lokal.
+  
   function renderSearchPage() {
     var form = document.querySelector('.search-page-form');
     var host = document.querySelector('.search-page-results .site-container');

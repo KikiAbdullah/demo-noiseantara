@@ -1,29 +1,18 @@
-/**
- * F1-61 — Pemutar terkendala (PRD DNG-03/05/06/10, DR-AUD-01..05).
- *
- * Aturan non-negotiable:
- * - HANYA Play/Pause — tidak ada next/prev/±10s; kontrol seek TIDAK PERNAH di DOM.
- * - Progress bar non-interaktif (pointer-events:none; tabindex disengaja tidak ada).
- * - Tombol panah ←/→ diabaikan saat fokus di dalam pemutar.
- * - Context menu (klik kanan) dimatikan di area pemutar — cegah "Buka audio di tab baru".
- * - playbackRate dikunci 1.0 (setiap 'ratechange' dikembalikan).
- * - Single player: memutar lagu lain menjeda yang aktif.
- * - Resume memakai posisi sessionStorage (bukan currentTime bawaan browser).
- */
+
 (function () {
   'use strict';
 
   var PLAYERS = document.querySelectorAll('.audio-player');
   if (!PLAYERS.length) return;
 
-  var active = null; // elemen .audio-player yang sedang diputar
+  var active = null; 
 
   function storageKey(mediaId) {
     return 'na:audio-pos:' + mediaId;
   }
 
   function requestToken(mediaId) {
-    // F1-60 — token signed berumur pendek; endpoint mengembalikan URL stream.
+    
     return fetch('/audio/' + mediaId + '/token', {
       method: 'POST',
       headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]')
@@ -58,10 +47,10 @@
     requestToken(mediaId).then(function (data) {
       var audio = new Audio(data.url);
       audio.preload = 'none';
-      audio.playbackRate = 1.0; // DR-AUD-03 — kunci kecepatan
+      audio.playbackRate = 1.0; 
 
       audio.addEventListener('ratechange', function () {
-        audio.playbackRate = 1.0; // dikunci — percobaan ubah kecepatan diabaikan
+        audio.playbackRate = 1.0; 
       });
       audio.addEventListener('timeupdate', function () {
         var pct = audio.duration ? (audio.currentTime / audio.duration) * 100 : 0;
@@ -90,7 +79,7 @@
       player._audio = audio;
       singleGuard(player);
 
-      // Resume posisi tersimpan di sessionStorage — bukan currentTime browser (DNG-10)
+      
       var saved = parseFloat(sessionStorage.getItem(storageKey(mediaId)) || '0');
       if (saved > 0 && isFinite(saved)) {
         audio.currentTime = saved;
@@ -103,7 +92,7 @@
     });
   }
 
-  /** DNG-06 — hanya satu pemutar aktif: yang lain dijeda. */
+  
   function singleGuard(player) {
     if (active && active !== player) pause(active);
     active = player;
@@ -124,10 +113,10 @@
 
     btn.addEventListener('click', function () { toggle(player); });
 
-    // Cegah menu konteks di area pemutar (DNG-03 — tanpa jalan pintas unduh)
+    
     player.addEventListener('contextmenu', function (e) { e.preventDefault(); });
 
-    // ←/→ diabaikan — seek keyboard mustahil (DNG-05)
+    
     player.addEventListener('keydown', function (e) {
       if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
         e.preventDefault();

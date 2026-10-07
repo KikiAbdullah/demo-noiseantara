@@ -1,5 +1,5 @@
-// Semua nama entri, karya, label, sumber, dan statistik di berkas ini adalah data demonstrasi.
-// Jangan gunakan sebagai klaim sejarah atau terbitkan sebagai arsip terverifikasi.
+
+
 
 export const cities = [
   { slug: 'surabaya', name: 'Surabaya', code: 'SBY', number: '01', mood: 'Kota pelabuhan, banyak suara.', summary: 'Jejak bunyi, ruang kecil, dan artefak yang bertahan dari kota yang tak pernah benar-benar diam.', color: '#d2f26b' },
@@ -64,7 +64,7 @@ export const articles = [
   ] }
 ];
 
-// Contoh kredit & kutipan hanya untuk memperlihatkan bidang dokumentasi, bukan klaim sejarah.
+
 releases.forEach(release => {
   release.credits = [{ role: 'Ilustrasi visual', name: 'Artwork orisinal prototipe', source: 'Dibuat khusus untuk antarmuka demo' }];
   release.lyricExcerpt = null;

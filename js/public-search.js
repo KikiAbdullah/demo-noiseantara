@@ -1,7 +1,4 @@
-/**
- * Pencarian modal tema Noiseantara (SRC-01/07): Ctrl/⌘+K, saran terkelompok
- * dari API server (debounce 250ms), keyboard ↑↓/Enter/Esc.
- */
+
 (function () {
   'use strict';
 
@@ -39,6 +36,13 @@
       html += '</div>';
     });
     results.innerHTML = html || '<div class="search-empty">Belum ada yang cocok dengan <strong>' + esc(input.value) + '</strong>.</div>';
+    // aria-expanded harus ikut berubah bersama isi daftar. Sebelumnya nilai
+    // ini hanya pernah di-set 'false' di update(), jadi ketika saran benar
+    // benar tampil, pembaca layar tetap diberi tahu daftarnya tertutup.
+    // Kosongnya aria-activedescendant juga perlu dibereskan, kalau tidak
+    // ia menunjuk opsi yang sudah tidak ada di DOM.
+    input.setAttribute('aria-expanded', html ? 'true' : 'false');
+    if (!html) input.removeAttribute('aria-activedescendant');
   }
 
   function update() {
@@ -56,7 +60,7 @@
 
   input.addEventListener('input', function () {
     clearTimeout(timer);
-    timer = setTimeout(update, 250); // SRC-01 debounce 250ms
+    timer = setTimeout(update, 250); 
   });
 
   input.addEventListener('keydown', function (e) {
@@ -81,17 +85,9 @@
     }
   });
 
-  // Update "lihat semua hasil" saat mengetik
+  
   input.addEventListener('input', function () {
     if (allLink) allLink.href = (window.__demoUrl ? window.__demoUrl('cari?q=' + encodeURIComponent(input.value.trim())) : '/cari?q=' + encodeURIComponent(input.value.trim()));
-  });
-
-  document.addEventListener('keydown', function (e) {
-    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
-      e.preventDefault();
-      var el = document.getElementById('searchModal');
-      if (el && window.bootstrap) bootstrap.Modal.getOrCreateInstance(el).show();
-    }
   });
 
   var searchModal = document.getElementById('searchModal');

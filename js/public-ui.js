@@ -1,11 +1,4 @@
-/**
- * Interaksi publik Noiseantara — parity template `noiseantara-capture/app.js`.
- *
- * Mencakup: toast global, berbagi tautan, modal sitasi (APA/MLA/footnote/BibTeX),
- * modal perbesar sampul, modal lapor (salin ringkasan), tombol kembali ke atas,
- * bilah progres baca, dan hitungan tersimpan lokal. Tanpa framework — vanilla JS.
- * Semua teks disanitasi sebelum dimasukkan ke DOM.
- */
+
 (function () {
   'use strict';
 
@@ -42,7 +35,7 @@
     }
   }
 
-  // -- Hitungan tersimpan lokal (kunci template: noiseantara:saved-releases:v1)
+  
   function refreshSavedCount() {
     var nodes = document.querySelectorAll('[data-saved-count]');
     if (!nodes.length) return;
@@ -54,9 +47,9 @@
     nodes.forEach(function (el) { el.textContent = String(count); });
   }
 
-  // -- Berbagi tautan (Web Share API + fallback salin lengkap)
-  // Semua tombol share wajib membawa data-title + data-text agar yang
-  // dibagikan bukan sekadar URL, melainkan judul + keterangan + tautan.
+  
+  
+  
   function shareUrl(url, title, text) {
     var absolute = url;
     try { absolute = new URL(url, window.location.origin).toString(); } catch (e) {}
@@ -65,7 +58,7 @@
     var shareText = text
       || (meta && meta.getAttribute('content'))
       || shareTitle;
-    // Format fallback salin: judul + keterangan + URL (siap tempel ke WA/IG/X).
+    
     var fullMessage = shareTitle + '\n' + shareText + '\n' + absolute;
     if (navigator.share) {
       var payload = { title: shareTitle, text: shareText, url: absolute };
@@ -82,7 +75,7 @@
     }
   }
 
-  // -- Sitasi: bangun 4 format dari atribut data-* pemicu
+  
   var citationState = { title: '', url: '', year: String(new Date().getFullYear()), format: 'apa' };
 
   function buildCitation() {
@@ -121,7 +114,7 @@
     if (el && window.bootstrap) window.bootstrap.Modal.getOrCreateInstance(el).show();
   }
 
-  // -- Sampul: tampilkan gambar besar di modal
+  
   function openCover(src, title) {
     var img = document.getElementById('coverModalImage');
     var caption = document.getElementById('coverModalCaption');
@@ -136,7 +129,7 @@
     if (el && window.bootstrap) window.bootstrap.Modal.getOrCreateInstance(el).show();
   }
 
-  // -- Lapor: isi URL halaman + salin ringkasan
+  
   function openReport() {
     var url = document.getElementById('reportUrl');
     if (url) url.textContent = window.location.href;
@@ -144,13 +137,13 @@
     if (el && window.bootstrap) window.bootstrap.Modal.getOrCreateInstance(el).show();
   }
 
-  // -- Zoom artwork (dialog native, CSP-safe — M-6: tanpa onclick inline)
+  
   function openCoverZoom() {
     var dialog = document.getElementById('coverZoom');
     if (dialog && typeof dialog.showModal === 'function') dialog.showModal();
   }
 
-  // -- Sort direktori (M-6: ganti onchange inline dengan handler terdelegasi)
+  
   document.addEventListener('change', function (event) {
     var select = event.target.closest('select[data-sort-select]');
     if (!select) return;
@@ -159,8 +152,8 @@
     if (url) window.location.href = url;
   });
 
-  // -- Scene explorer beranda (M-6: dipindah dari inline script; DOM API dengan
-  //    textContent — nilai dataset kota tidak pernah masuk lewat innerHTML)
+  
+  
   function initSceneExplorer() {
     var list = document.querySelector('.scene-city-list');
     var panel = document.getElementById('scenePreview');
@@ -182,6 +175,8 @@
         });
         btn.classList.add('active');
         btn.setAttribute('aria-pressed', 'true');
+
+        panel.style.setProperty('--city-accent', btn.dataset.cityColor || '#d2f26b');
 
         while (panel.firstChild) panel.removeChild(panel.firstChild);
 
@@ -222,8 +217,8 @@
     });
   }
 
-  // -- Daftar tersimpan lokal (halaman /tersimpan; M-6: dari inline script,
-  //    render via DOM API — slug dari localStorage tidak pernah di-innerHTML)
+  
+  
   function initSavedList() {
     var list = document.getElementById('savedList');
     if (!list) return;
@@ -291,8 +286,8 @@
     render();
   }
 
-  // -- Form kontribusi tamu: wizard 4 langkah + tracklist dinamis.
-  // Header langkah (.steps) berada di luar <form>, jadi diquery dari dokumen.
+  
+  
   function initGuestContributionForm() {
     var form = document.getElementById('contributionForm');
     if (!form) return;
@@ -344,16 +339,21 @@
       b.addEventListener('click', function () {
         var target = parseInt(b.getAttribute('data-step-go') || b.dataset.stepGo || '0', 10);
         if (isNaN(target)) target = 0;
-        // Boleh mundur bebas; maju hanya bila langkah saat ini valid.
+        
         if (target > current && !validateStep(current)) return;
         show(target);
       });
     });
 
-    // Kirim: pastikan checkbox persetujuan + field wajib terisi, tampilkan ringkasan error.
+    
     form.addEventListener('submit', function (e) {
       var messages = [];
-      ['title', 'artist_name', 'city_slug', 'source_type', 'source_description', 'guest_name', 'guest_email'].forEach(function (id) {
+      
+      var kindEl = form.querySelector('#entity_kind');
+      var kind = kindEl ? kindEl.value : 'rilisan';
+      var requiredIds = ['title', 'city_slug', 'source_type', 'source_description', 'guest_name', 'guest_email'];
+      if (kind === 'rilisan') requiredIds.push('artist_name');
+      requiredIds.forEach(function (id) {
         var el = form.querySelector('#' + id);
         if (el && !el.checkValidity()) messages.push(el.previousElementSibling ? el.previousElementSibling.textContent.trim() : id);
       });
@@ -366,7 +366,7 @@
           errorBox.innerHTML = '<strong>Lengkapi dulu sebelum dikirim:</strong><ul>' + (messages.length ? messages.map(function (m) { return '<li>' + esc(m) + '</li>'; }).join('') : '<li>Periksa kembali kolom bertanda *.</li>') + '</ul>';
           errorBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
-        // Loncat ke langkah pertama yang invalid agar pengguna tahu posisi.
+        
         for (var i = 0; i < steps.length; i++) {
           var req = steps[i].querySelectorAll('input[required],select[required],textarea[required]');
           var bad = false;
@@ -386,7 +386,7 @@
       div.className = 'track-input-row';
       div.innerHTML = '<span>' + String(n + 1).padStart(2, '0') + '</span>'
         + '<input type="text" name="tracks[]" maxlength="120" class="form-control form-control-n" placeholder="Judul lagu">'
-        + '<button type="button" data-action="remove-track" aria-label="Hapus lagu"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5 19 19M19 5 5 19"/></svg></button>';
+        + '<button type="button" data-action="remove-track" aria-label="Hapus lagu"><i class="icon ph ph-x" style="font-size:16px" aria-hidden="true"></i></button>';
       rows.appendChild(div);
       div.querySelector('input').focus();
     });
@@ -401,7 +401,7 @@
     });
   }
 
-  // -- Delegasi klik global (data-action=*)
+  
   document.addEventListener('click', function (event) {
     var trigger = event.target.closest('[data-action]');
     if (!trigger) return;
@@ -430,7 +430,7 @@
     }
   });
 
-  // -- Tab format sitasi
+  
   document.querySelectorAll('[data-citation-format]').forEach(function (btn) {
     btn.addEventListener('click', function () {
       citationState.format = btn.getAttribute('data-citation-format') || 'apa';
@@ -438,7 +438,21 @@
     });
   });
 
-  // -- Progres baca + tombol kembali
+  
+  
+  
+  
+  document.addEventListener('click', function (event) {
+    var btn = event.target.closest('[data-flash-dismiss]');
+    if (!btn) return;
+    var flash = btn.closest('.flash-status');
+    if (!flash) return;
+    var wrap = flash.closest('.flash-wrap');
+    flash.remove();
+    if (wrap && !wrap.children.length) wrap.remove();
+  });
+
+  
   function updateScrollUi() {
     var bar = document.getElementById('readingProgress');
     var top = document.querySelector('[data-action="back-to-top"].back-top');
@@ -450,7 +464,7 @@
   document.addEventListener('scroll', updateScrollUi, { passive: true });
   window.addEventListener('resize', updateScrollUi);
 
-  // -- Inisialisasi
+  
   document.addEventListener('DOMContentLoaded', function () {
     refreshSavedCount();
     updateScrollUi();

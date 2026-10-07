@@ -12,41 +12,48 @@ const SAVED_KEY = 'noiseantara:saved-releases:v1';
 const FORMATS = ['Kaset', 'CD-R', 'CD', 'Vinyl', 'Digital'];
 const GENRES = ['Hardcore', 'Punk', 'Noise', 'Metal', 'Sludge', 'Grindcore', 'Indie / DIY', 'Eksperimental'];
 const TYPES = ['Demo', 'EP', 'Album', 'Split', 'Single', 'Live'];
-const svgPaths = {
-  arrow: '<path d="M5 12h14m-6-6 6 6-6 6"/>',
-  arrowUp: '<path d="M6 18 18 6M8 6h10v10"/>',
-  arrowDown: '<path d="m6 9 6 6 6-6"/>',
-  search: '<circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/>',
-  close: '<path d="M5 5 19 19M19 5 5 19"/>',
-  menu: '<path d="M3 7h18M3 12h18M3 17h18"/>',
-  bookmark: '<path d="M5 4.5h14v16l-7-4.7-7 4.7z"/>',
-  check: '<path d="m4 12 5 5L20 6"/>',
-  copy: '<rect x="8" y="8" width="12" height="12" rx="1"/><path d="M16 8V4H4v12h4"/>',
-  clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/>',
-  pin: '<path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z"/><circle cx="12" cy="10" r="2"/>',
-  disc: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2"/><path d="M14.5 6.5A6 6 0 0 1 18 10"/>',
-  filter: '<path d="M3 5h18M6 12h12M9 19h6"/>',
-  grid: '<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>',
-  list: '<path d="M8 5h13M8 12h13M8 19h13M3 5h.01M3 12h.01M3 19h.01"/>',
-  layers: '<path d="m12 3 9 5-9 5-9-5 9-5Zm-9 9 9 5 9-5M3 16l9 5 9-5"/>',
-  file: '<path d="M6 3h8l4 4v14H6zM14 3v5h5M9 12h6M9 16h6"/>',
-  info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5h.01"/>',
-  share: '<circle cx="18" cy="5" r="2"/><circle cx="6" cy="12" r="2"/><circle cx="18" cy="19" r="2"/><path d="m8 11 8-5M8 13l8 5"/>',
-  image: '<rect x="3" y="4" width="18" height="16" rx="1"/><circle cx="8" cy="9" r="1.5"/><path d="m4 17 5-5 3 3 3-4 5 6"/>',
-  upload: '<path d="M12 16V3m-5 5 5-5 5 5M4 16v5h16v-5"/>',
-  plus: '<path d="M12 4v16M4 12h16"/>',
-  minus: '<path d="M4 12h16"/>',
-  headphones: '<path d="M3 14v-3a9 9 0 0 1 18 0v3M3 14v5h4v-6H3Zm14-1v6h4v-5h-4Z"/>',
-  book: '<path d="M12 6C9 4 5 4 2 5v15c3-1 7-1 10 1 3-2 7-2 10-1V5c-3-1-7-1-10 1Zm0 0v15"/>',
-  alert: '<path d="m12 3 10 18H2L12 3Zm0 6v5m0 3h.01"/>',
-  external: '<path d="M13 4h7v7M20 4l-9 9M18 14v6H4V6h6"/>',
-  mail: '<rect x="3" y="5" width="18" height="14" rx="1"/><path d="m3 6 9 7 9-7"/>',
-  refresh: '<path d="M20 9a8 8 0 0 0-14-3L4 8m0-4v4h4M4 15a8 8 0 0 0 14 3l2-2m0 4v-4h-4"/>',
-  quote: '<path d="M10 6H5l-2 5v7h8v-8H6m15-4h-5l-2 5v7h8v-8h-5"/>',
-  headphonesOff: '<path d="M3 3 21 21M3 14v-3a9 9 0 0 1 15-6m3 9v-3c0-1-.2-2-.5-3M3 14v5h4v-5H3Zm14 2v3h4v-5h-4"/>'
+// Ikon memakai Phosphor Icons (CDN, weight regular). Peta ini menerjemahkan
+// nama lama ke nama resmi Phosphor agar semua pemanggil icon() tetap sama.
+const phosphorNames = {
+  arrow: 'arrow-right',
+  arrowUp: 'arrow-up-right',
+  arrowDown: 'arrow-down',
+  search: 'magnifying-glass',
+  close: 'x',
+  menu: 'list',
+  bookmark: 'bookmark-simple',
+  check: 'check',
+  copy: 'copy',
+  clock: 'clock',
+  pin: 'map-pin',
+  disc: 'record',
+  filter: 'funnel',
+  grid: 'squares-four',
+  list: 'list',
+  layers: 'stack',
+  file: 'file',
+  info: 'info',
+  share: 'share-network',
+  image: 'image',
+  upload: 'upload-simple',
+  plus: 'plus',
+  minus: 'minus',
+  headphones: 'headphones',
+  book: 'book-open',
+  alert: 'warning',
+  external: 'arrow-square-out',
+  mail: 'envelope-simple',
+  refresh: 'arrows-clockwise',
+  quote: 'quotes',
+  pencil: 'pencil-simple',
+  bell: 'bell',
+  publish: 'monitor-arrow-up',
+  draft: 'arrow-down',
+  headphonesOff: 'speaker-slash'
 };
 function icon(name, size = 20, extra = '') {
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" class="icon ${extra}" aria-hidden="true">${svgPaths[name] || svgPaths.arrow}</svg>`;
+  const ph = phosphorNames[name] || phosphorNames.arrow;
+  return `<i class="icon ph ph-${ph}${extra ? ' ' + extra : ''}" style="font-size:${size}px" aria-hidden="true"></i>`;
 }
 function esc(value = '') {
   return String(value).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -55,7 +62,7 @@ const enc = value => encodeURIComponent(value);
 const normalize = value => String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
 const slugify = value => normalize(value).replace(/\s+/g, '-');
 const cityName = slug => cityBySlug(slug)?.name || 'Belum diketahui';
-// A real HTML page renders the 9:16 poster; don't route it through the SPA.
+
 function captureLink(type, slug) {
   const label = { rilisan: 'rilisan', gig: 'gig', zine: 'zine', artis: 'artis' }[type] || 'entri';
   return `<a class="btn-capture" href="/capture.html?tipe=${enc(type)}&slug=${enc(slug)}" data-native-nav aria-label="Capture ${esc(label)} ke PNG vertikal 9 banding 16">${icon('image', 18)} <span>CAPTURE <b>9:16</b></span></a>`;
@@ -98,7 +105,7 @@ function artistCard(artist) {
   </a></article>`;
 }
 function articleCard(article, index) {
-  const cover = article.image === 'scene-live' ? '/assets-public/optimized/scene-live-sm.webp' : coverPath(article.image, true);
+  const cover = coverPath(article.image, true);
   return `<article class="article-card"><a href="/pustaka/${enc(article.slug)}" class="article-card-link"><div class="article-card-photo"><img src="${cover}" alt="Ilustrasi editorial untuk ${esc(article.title)}" width="720" height="480" loading="lazy"><span class="article-card-no">0${index + 1}</span></div><div class="article-card-info"><p class="mono-label">${esc(article.kicker)} <span class="meta-dot">·</span> ${article.minutes} MENIT BACA</p><h3>${esc(article.title)}</h3><p>${esc(article.summary)}</p><span class="text-link">BACA CERITA ${icon('arrowUp', 17)}</span></div></a></article>`;
 }
 function pageIntro(numberTag, kicker, title, description, options = {}) {
@@ -139,10 +146,10 @@ function homePage() {
   <div class="hero-visual" aria-label="Kolase artwork ilustratif rilisan underground"><div class="hero-orbit" aria-hidden="true"></div><div class="hero-vinyl" aria-hidden="true"><span></span></div><div class="hero-back-cover" aria-hidden="true"><img src="${coverPath('kamar-ambang', true)}" alt=""></div><div class="hero-main-sleeve"><div class="sleeve-top"><span>NOISEANTARA<br>ARCHIVE COPY</span><span>001 / 026</span></div><img src="${coverPath('rongga-trotoar')}" alt="Artwork ilustratif kaset fiktif Bising di Bawah Tanah" width="500" height="500" fetchpriority="high"><div class="sleeve-bottom"><span>RONGGA TROTOAR<br><strong>BISING DI BAWAH TANAH</strong></span><span>2003<br>DEMO / KASET</span></div></div><div class="hero-stamp"><span>SIMPAN</span><strong>JEJAK<br>NYA.</strong><span>✳ NOISEANTARA ✳</span></div><div class="hero-art-label">FIG. 01 <span>—</span> ARTEFAK ILUSTRATIF</div></div></div><div class="hero-bottom"><div class="site-container hero-bottom-inner"><div><span>12</span><p>RILISAN<br>CONTOH</p></div><div><span>09</span><p>ARTIS<br>CONTOH</p></div><div><span>07</span><p>KOTA<br>DI JAWA TIMUR</p></div><p class="hero-scroll">GULIR UNTUK<br>MENJELAJAHI <span>↓</span></p></div></div></section>
   <div class="ticker" aria-hidden="true"><div class="ticker-track">${Array(3).fill('PUNK <span>✳</span> HARDCORE <span>✳</span> METAL <span>✳</span> NOISE <span>✳</span> INDIE / DIY <span>✳</span> ARSIP UNTUK SEMUA <span>✳</span>').join(' ')}</div></div>
   <section class="featured-section section-cream"><div class="site-container">${eyebrow('02 / 06', 'BARU DARI RAK ARSIP')}<div class="section-heading"><div><h2>SUARA YANG<br><em>DITEMUKAN.</em></h2><p>Setiap rilisan adalah pintu masuk ke orang, tempat, dan waktu di belakangnya.</p></div><a href="/rilisan" class="section-side-link">SEMUA RILISAN <span>${icon('arrowUp', 19)}</span></a></div><div class="featured-grid">${featured.map(release => releaseCard(release)).join('')}</div><div class="section-footnote"><span>01—04 / 12 ENTRI ILUSTRATIF</span><span>URUTAN KURASI MANUSIA, BUKAN ALGORITMA.</span></div></div></section>
-  <section class="manifesto-section"><div class="site-container manifesto-grid"><div class="manifesto-image"><img src="/assets-public/optimized/scene-live.webp" alt="Ilustrasi suasana pertunjukan kecil underground, dibuat untuk prototipe" width="1400" height="933" loading="lazy"><span class="image-edge-note">DOKUMENTASI VISUAL ILUSTRATIF / BUKAN FOTO PERISTIWA NYATA</span><span class="manifesto-overlay">BUKAN SEKADAR<br><em>DISKOGRAFI.</em></span></div><div class="manifesto-copy">${eyebrow('TENTANG ARSIP', 'KENAPA INI PENTING', true)}<div class="asterisk" aria-hidden="true">✳</div><h2>YANG HILANG BUKAN CUMA <span>SUARANYA.</span></h2><p>Sebuah sampul kaset menyimpan lebih dari daftar lagu. Ada tahun yang samar, kota yang membentuknya, dan orang-orang yang menjaga salinannya tetap hidup.</p><p>Noiseantara dibangun untuk merangkai potongan itu—<strong>dengan sumber, dengan kredit, dan tanpa mengarang bagian yang belum kita tahu.</strong></p><a href="/tentang" class="text-link light">CARA KAMI BEKERJA ${icon('arrowUp', 18)}</a></div></div></section>
+  <section class="manifesto-section"><div class="site-container manifesto-grid"><div class="manifesto-image"><img src="${coverPath('scene-live')}" alt="Ilustrasi suasana pertunjukan kecil underground, dibuat untuk prototipe" width="1400" height="933" loading="lazy"><span class="image-edge-note">DOKUMENTASI VISUAL ILUSTRATIF / BUKAN FOTO PERISTIWA NYATA</span><span class="manifesto-overlay">BUKAN SEKADAR<br><em>DISKOGRAFI.</em></span></div><div class="manifesto-copy">${eyebrow('TENTANG ARSIP', 'KENAPA INI PENTING', true)}<div class="asterisk" aria-hidden="true">✳</div><h2>YANG HILANG BUKAN CUMA <span>SUARANYA.</span></h2><p>Sebuah sampul kaset menyimpan lebih dari daftar lagu. Ada tahun yang samar, kota yang membentuknya, dan orang-orang yang menjaga salinannya tetap hidup.</p><p>Noiseantara dibangun untuk merangkai potongan itu—<strong>dengan sumber, dengan kredit, dan tanpa mengarang bagian yang belum kita tahu.</strong></p><a href="/tentang" class="text-link light">CARA KAMI BEKERJA ${icon('arrowUp', 18)}</a></div></div></section>
   <section class="scene-section section-acid"><div class="site-container">${eyebrow('03 / 06', 'SATU SCENE, BANYAK KOTA')}<div class="scene-heading"><h2>BERMULA<br>DARI <span>JATIM.</span></h2><p>Setiap kota punya frekuensinya sendiri. Pilih satu, lalu ikuti jejak rilisan dan nama-nama di sekitarnya.</p></div><div class="scene-explorer"><div class="scene-city-list" role="group" aria-label="Pilih kota untuk melihat cuplikan">${cities.slice(0, 5).map((city, i) => `<button type="button" class="city-select ${i === 0 ? 'active' : ''}" data-action="city-preview" data-city="${city.slug}" aria-pressed="${i === 0}"><span class="city-list-number">${city.number}</span><span>${esc(city.name)}</span>${icon('arrowUp', 19)}</button>`).join('')}<a href="/scene" class="city-all-link">LIHAT SEMUA KOTA ${icon('arrow', 17)}</a></div><div class="scene-preview" id="scenePreview" style="--city-accent:${cities[0].color}">${scenePreview(cities[0])}</div></div></div></section>
   ${homeEphemera()}
-  <section class="editorial-section section-cream"><div class="site-container">${eyebrow('05 / 06', 'CERITA DI BALIK SUARA')}<div class="section-heading"><div><h2>BUKAN CUMA<br><em>DATA.</em></h2><p>Catatan, pertanyaan, dan kisah di balik arsip yang terus tumbuh.</p></div><a href="/pustaka" class="section-side-link">KE PUSTAKA <span>${icon('arrowUp', 19)}</span></a></div><div class="editorial-grid"><a href="/pustaka/${article.slug}" class="editorial-main"><img src="/assets-public/optimized/scene-live.webp" alt="Ilustrasi editorial pertunjukan musik kecil" width="1400" height="933" loading="lazy"><div class="editorial-main-overlay"><span>01 / ${esc(article.kicker)}</span><h3>${esc(article.title)}</h3><span class="text-link light">BACA CERITA ${icon('arrowUp', 19)}</span></div></a><div class="editorial-side">${articles.slice(1, 3).map((item, i) => `<a href="/pustaka/${item.slug}" class="editorial-side-item"><span>0${i + 2} / ${esc(item.kicker)}</span><h3>${esc(item.title)}</h3><p>${esc(item.summary)}</p><span class="round-arrow">${icon('arrowUp', 19)}</span></a>`).join('')}</div></div></div></section>
+  <section class="editorial-section section-cream"><div class="site-container">${eyebrow('05 / 06', 'CERITA DI BALIK SUARA')}<div class="section-heading"><div><h2>BUKAN CUMA<br><em>DATA.</em></h2><p>Catatan, pertanyaan, dan kisah di balik arsip yang terus tumbuh.</p></div><a href="/pustaka" class="section-side-link">KE PUSTAKA <span>${icon('arrowUp', 19)}</span></a></div><div class="editorial-grid"><a href="/pustaka/${article.slug}" class="editorial-main"><img src="${coverPath('scene-live')}" alt="Ilustrasi editorial pertunjukan musik kecil" width="1400" height="933" loading="lazy"><div class="editorial-main-overlay"><span>01 / ${esc(article.kicker)}</span><h3>${esc(article.title)}</h3><span class="text-link light">BACA CERITA ${icon('arrowUp', 19)}</span></div></a><div class="editorial-side">${articles.slice(1, 3).map((item, i) => `<a href="/pustaka/${item.slug}" class="editorial-side-item"><span>0${i + 2} / ${esc(item.kicker)}</span><h3>${esc(item.title)}</h3><p>${esc(item.summary)}</p><span class="round-arrow">${icon('arrowUp', 19)}</span></a>`).join('')}</div></div></div></section>
   ${homeDirectory()}
   <section class="contribute-cta"><div class="site-container contribute-cta-inner"><span class="cta-asterisk" aria-hidden="true">✳</span><div><p class="mono-label">ARSIP INI TAK DIBANGUN SENDIRIAN</p><h2>PUNYA KASETNYA?<br><span>JANGAN SIMPAN CERITANYA SENDIRI.</span></h2><p>Satu foto sampul, satu nama, satu ingatan—semuanya bisa jadi awal.</p></div><a href="/kontribusi" class="cta-circle" aria-label="Mulai berkontribusi">${icon('arrowUp', 35)}<span>IKUT<br>ARSIPKAN</span></a></div></section>`;
 }
@@ -268,7 +275,7 @@ function articlesPage() {
   return `${pageIntro('PUSTAKA / 05', 'CATATAN & CERITA', 'BACA DI BALIK<br><em>KEBISINGAN.</em>', 'Arsip menyimpan data. Cerita membantu kita mengerti mengapa data itu berarti.', { aside: `<div class="intro-stat"><strong>0${articles.length}</strong><span>CATATAN<br>EDITORIAL</span></div>` })}<section class="section-cream articles-list"><div class="site-container"><p class="directory-result-label">PILIHAN REDAKSI / SEMUA ARTIKEL DEMONSTRASI</p><div class="articles-grid">${articles.map((article, i) => articleCard(article, i)).join('')}</div>${demoNote('demo-note--directory')}</div></section>`;
 }
 function articleDetailPage(article) {
-  const image = article.image === 'scene-live' ? '/assets-public/optimized/scene-live.webp' : coverPath(article.image);
+  const image = coverPath(article.image);
   const related = articles.filter(item => item.slug !== article.slug);
   return `<article class="article-detail"><header class="article-hero"><div class="site-container">${breadcrumbs([{ label: 'Pustaka', href: '/pustaka' }, { label: article.title }])}${eyebrow('PUSTAKA / ' + article.kicker, 'ESAI & CATATAN', true)}<h1>${esc(article.title)}</h1><p class="article-dek">${esc(article.summary)}</p><div class="article-meta-line"><span>OLEH <strong>${esc(article.author)}</strong></span><span>${esc(article.date).toUpperCase()}</span><span>${article.minutes} MENIT BACA</span></div></div></header><div class="article-wide-image"><img src="${image}" alt="Ilustrasi editorial untuk ${esc(article.title)}, bukan foto peristiwa sejarah" width="1400" height="933"><span>ILUSTRASI EDITORIAL / NOISEANTARA</span></div><div class="section-cream article-content-wrap"><div class="site-container article-content-layout"><aside class="article-side-nav"><span>DALAM CERITA INI</span>${article.sections.map((section, i) => `<a href="#bagian-${i + 1}">0${i + 1} / ${esc(section.heading)}</a>`).join('')}<div class="article-tools"><button type="button" data-action="reader-mode" aria-pressed="false">${icon('book', 17)} MODE BACA</button><button type="button" data-action="share" data-url="/pustaka/${esc(article.slug)}" data-title="${esc(article.title)}">${icon('share', 17)} BAGIKAN</button><button type="button" data-action="print">${icon('file', 17)} CETAK</button></div></aside><div class="article-prose" id="articleProse"><div class="article-prose-intro"><span class="drop-cap">N</span><p>Noiseantara adalah tempat bagi potongan-potongan yang hampir tercecer. Catatan ini mengajak kita melihat mengapa cara mengingat sama pentingnya dengan apa yang diingat.</p></div>${article.sections.map((section, i) => `<section id="bagian-${i + 1}"><span class="article-section-no">0${i + 1} / CATATAN</span><h2>${esc(section.heading)}</h2>${section.paragraphs.map(text => `<p>${esc(text)}</p>`).join('')}</section>`).join('')}<div class="article-end-mark">✳</div><div class="article-disclaimer">${icon('info', 19)} <span>Artikel dan ilustrasi ini dibuat untuk mendemonstrasikan tampilan Pustaka Noiseantara. Bukan riset sejarah tentang artis atau peristiwa tertentu.</span></div><a href="/pustaka" class="text-link">← KEMBALI KE PUSTAKA</a></div><aside class="article-side-note"><span>INGAT INI</span><p>“Lebih baik entri kosong yang jujur daripada tanggal pasti yang dikarang.”</p><small>PRINSIP ARSIP / 01</small></aside></div></div></article><section class="related-section section-cream"><div class="site-container">${eyebrow('BACA SELANJUTNYA', 'DARI PUSTAKA')}<div class="articles-grid">${related.map((item, i) => articleCard(item, i)).join('')}</div></div></section>`;
 }

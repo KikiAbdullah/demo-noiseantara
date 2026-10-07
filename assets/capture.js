@@ -1,10 +1,7 @@
 import { releases, artists, cities, artistBySlug, artistOf, coverPath } from './data.js';
 import { gigs, zines } from './extended-data.js';
 
-/* Capture Studio — poster 9:16 dari entri arsip terverifikasi. Halaman ini
- * tidak mengunggah, tidak mengotentikasi, dan tidak mengklaim hak atas
- * materi pihak ketiga. Pratinjau dan PNG memakai kanvas 1080 × 1920 yang
- * sama sehingga hasil unduhan persis seperti yang ditampilkan. */
+
 const canvas = document.getElementById('posterCanvas');
 const ctx = canvas.getContext('2d', { alpha: false });
 const typeField = document.getElementById('captureType');
@@ -20,19 +17,89 @@ const COLORS = { lime: '#d2f26b', coral: '#ed7757', lavender: '#b5a6ed' };
 const collections = { rilisan: releases, gig: gigs, zine: zines, artis: artists };
 const labels = { rilisan: 'RILISAN', gig: 'GIG', zine: 'ZINE', artis: 'ARTIS', label: 'LABEL', pustaka: 'PUSTAKA' };
 const names = { rilisan: item => item.title, gig: item => item.title, zine: item => item.name, artis: item => item.name, label: item => item.name || item.title, pustaka: item => item.title || item.name };
-// Entri database asli dari server (window.__CAPTURE_DB__: {tipe: [{slug,title}]})
-// diutamakan agar studio memamerkan arsip sungguhan, bukan data contoh statis.
-const dbIndex = (window.__CAPTURE_DB__ && typeof window.__CAPTURE_DB__ === 'object') ? window.__CAPTURE_DB__ : {};
+
+
+
+function readDbIndex() {
+  try {
+    const node = document.getElementById('capture-db');
+    const parsed = JSON.parse(node ? node.textContent : '{}');
+    if (parsed && typeof parsed === 'object') return parsed;
+  } catch (err) {  }
+  return (window.__CAPTURE_DB__ && typeof window.__CAPTURE_DB__ === 'object') ? window.__CAPTURE_DB__ : {};
+}
+const dbIndex = readDbIndex();
+
+// Sampul cadangan digambar lokal (bukan file aset fiktif): entri yang belum
+// punya artwork harus tampil jujur "belum terdokumentasi", bukan memakai
+// sampul band lain yang tidak ada hubungannya.
+const placeholderCover = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(
+  '<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 1000 1000">' +
+  '<rect width="1000" height="1000" fill="#1b261d"/>' +
+  '<rect x="58" y="58" width="884" height="884" fill="none" stroke="#3d4a3a" stroke-width="3"/>' +
+  '<circle cx="500" cy="455" r="185" fill="none" stroke="#5d7555" stroke-width="6"/>' +
+  '<circle cx="500" cy="455" r="24" fill="#5d7555"/>' +
+  '<text x="500" y="745" fill="#c3cfbf" font-family="monospace" font-size="33" text-anchor="middle" letter-spacing="4">SAMPUL BELUM</text>' +
+  '<text x="500" y="793" fill="#c3cfbf" font-family="monospace" font-size="33" text-anchor="middle" letter-spacing="4">TERDOKUMENTASI</text>' +
+  '</svg>'
+);
+
 function dbItemFor(type, row) {
   const title = row.title || row.slug;
-  const citySlug = row.city || 'jawa-timur';
-  const base = { slug: row.slug, title, name: title, city: citySlug, city_name: row.city_name || '', cover: releases[0]?.cover };
-  if (type === 'rilisan') return { ...base, year: row.year || '', genre: (row.city_name || 'ARSIP').toUpperCase(), format: 'ARSIP', precision: 'ARSIP', description: title, tracks: [{ title, duration: '' }] };
-  if (type === 'gig') return { ...base, year: row.year || '', date: [title, row.city_name, row.year].filter(Boolean).join(' / ').toUpperCase(), precision: 'ARSIP', venue: row.city_name || 'Lihat entri', flyer: releases[0]?.cover, lineup: [{ text: 'Buka entri untuk lineup lengkap' }] };
-  if (type === 'zine') return { ...base, period: (row.city_name || 'KATALOG').toUpperCase(), issues: [{ number: '01', year: '', pages: '', summary: title }], description: title };
-  if (type === 'artis') return { ...base, formed: row.year || '', genres: ['ARSIP'], short: title };
-  if (type === 'label') return { ...base, period: 'KATALOG LABEL', issues: [], releases: [], description: title };
-  return { ...base, summary: title, description: title };
+  const base = {
+    fromDb: true,
+    slug: row.slug,
+    title,
+    name: title,
+    city: row.city || 'jawa-timur',
+    city_name: row.city_name || '',
+    year: row.year || '',
+    cover: row.cover || null,
+  };
+  if (type === 'rilisan') return {
+    ...base,
+    artist: row.artist_slug || null,
+    artistName: row.artist || '',
+    genre: (row.genres || []).join(' / '),
+    genres: row.genres || [],
+    format: (row.format || []).join(', '),
+    typeLabel: row.type_label || 'Rilisan',
+    precision: row.precision || 'ARSIP',
+    dateText: row.date_text || '',
+    labelName: row.label || '',
+    description: row.description || title,
+    tracks: row.tracks || [],
+  };
+  if (type === 'gig') return {
+    ...base,
+    date: row.date_text || [title, row.city_name, row.year].filter(Boolean).join(' / '),
+    precision: row.precision || 'ARSIP',
+    venue: row.venue || 'Belum terdokumentasi',
+    description: row.description || title,
+    lineup: (row.lineup || []).map(l => ({ text: l.text })),
+  };
+  if (type === 'zine') return {
+    ...base,
+    period: row.period || 'KATALOG',
+    style: row.style || 'ARSIP',
+    issues: row.issues || [],
+    description: row.description || title,
+  };
+  if (type === 'artis') return {
+    ...base,
+    formed: row.year || '',
+    genres: row.genres || [],
+    short: row.short || row.description || title,
+    description: row.description || title,
+    releases: row.releases || [],
+  };
+  if (type === 'label') return {
+    ...base,
+    period: 'KATALOG LABEL',
+    description: row.description || `Katalog rilisan ${title}.`,
+    releases: row.releases || [],
+  };
+  return { ...base, summary: row.summary || title, description: row.description || row.summary || title };
 }
 function dbCollection(type) {
   const rows = Array.isArray(dbIndex[type]) ? dbIndex[type] : [];
@@ -43,7 +110,9 @@ function liveCollection(type) {
   if (db.length) return db;
   return collections[type] || [];
 }
-let palette = 'lime';
+// Aksen kartu sudah tetap (Hijau Acid) — pilihan AKSEN WARNA dihapus,
+// jadi tidak ada lagi state `palette` yang perlu disimpan.
+const ACCENT = 'lime';
 let activeItem = null;
 let ready = false;
 let requestId = 0;
@@ -60,6 +129,32 @@ const city = slug => {
   return 'Jawa Timur';
 };
 const fontDisplay = '"Barlow Condensed", Impact, "Arial Narrow", sans-serif';
+
+// Logo resmi dipakai untuk SEMUA lambang di dalam poster (masthead, footer,
+// dan stiker bekas lingkaran). URL-nya dikirim Blade lewat `data-logo-src`
+// supaya ikut cache-busting `n_asset()` seperti aset lain.
+// WAJIB varian `-transparan-`. File `noiseantara-logo-1x1.png` memuat
+// `<rect width="1200" height="1200" fill="#121411"/>` yang ikut ter-render,
+// sehingga digambar sebagai tile persegi ia memunculkan kotak gelap bertepi
+// keras di atas poster. Varian transparan menyisakan sudut kosong, jadi hanya
+// artwork logo yang tampil dan tidak ada blok warna yang menutupi layout.
+const LOGO_FALLBACK = new URL('./optimized/noiseantara-logo-1x1-transparan-latar-gelap.png', import.meta.url).href;
+const logoImage = new Image();
+logoImage.src = canvas.dataset.logoSrc || LOGO_FALLBACK;
+const logoReady = logoImage.complete
+  ? Promise.resolve()
+  : new Promise(resolve => { logoImage.onload = resolve; logoImage.onerror = resolve; });
+
+// Dipusatkan di (cx, cy) supaya mudah disejajarkan dengan blok teks di
+// sebelahnya; selisih tepi akibat rotasi dihitung pemanggil.
+function logoMark(cx, cy, size, rotate = 0) {
+  if (!logoImage.complete || !logoImage.naturalWidth) return;
+  ctx.save();
+  ctx.translate(cx, cy);
+  if (rotate) ctx.rotate(rotate);
+  ctx.drawImage(logoImage, -size / 2, -size / 2, size, size);
+  ctx.restore();
+}
 const fontMono = '"Space Mono", monospace';
 const fontBody = '"DM Sans", Arial, sans-serif';
 const safeName = value => String(value).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 70);
@@ -76,8 +171,8 @@ function setReady(on) {
 }
 function chosenType() { return (liveCollection(typeField.value).length || typeField.value === 'label' || typeField.value === 'pustaka' || collections[typeField.value]) ? typeField.value : 'rilisan'; }
 function serverItemFor(type, slug) {
-  // Entri label/pustaka (dan semua tipe) tersedia sebagai <option> dari database.
-  // Bangun item generik agar studio tetap bisa memamerkan entri asli.
+  
+  
   const opt = [...entryField.options].find(o => o.value === slug);
   if (!opt) return null;
   const title = opt.textContent.trim() || slug;
@@ -97,14 +192,21 @@ const SITE_ROOT = new URL('..', import.meta.url).href; function detailPath(type,
   return new URL(`${map[type] || 'rilisan'}/${encodeURIComponent(item.slug)}`, SITE_ROOT).href;
 }
 function itemTitle(type, item) { return (names[type] || (v => v.title || v.name))(item); }
+// `artistOf()` hanya tahu fixture statis; entri dari DB tidak ada di sana
+// sehingga hasilnya `undefined` — dulu `.name` di sini yang bikin poster gagal.
+function artistNameOf(item) {
+  if (item.artistName) return item.artistName;
+  return artistOf(item)?.name || 'Kompilasi';
+}
 function itemImage(type, item) {
+  if (item.fromDb) return item.cover || placeholderCover;
   if (type === 'label' || type === 'pustaka') return coverPath(item.cover || releases[0].cover);
   return coverPath(type === 'gig' ? item.flyer : item.cover);
 }
 
 function populateEntries(type, requestedSlug = '') {
-  // Utamakan entri database asli dari server; data statis hanya cadangan
-  // bila server tidak mengirim daftar (mis. berkas dibuka langsung).
+  
+  
   const items = liveCollection(type);
   if (!items.length) return false;
   entryField.replaceChildren(...items.map(item => {
@@ -208,40 +310,32 @@ function fitMultiline(text, x, topBaseline, maxWidth, maxLines, size, minSize, l
   lines.forEach((part,i)=>fitLine(part,x,topBaseline+i*lineHeight,maxWidth,fontSize,minSize,family,weight,color));
   return topBaseline+(lines.length-1)*lineHeight;
 }
-function brandMark(x,y,size,accent){
-  ctx.save();ctx.translate(x+size/2,y+size/2);ctx.rotate(-.12);
-  ctx.fillStyle=accent;ctx.fillRect(-size/2,-size/2,size,size);
-  ctx.strokeStyle=DARK;ctx.lineWidth=size*.092;ctx.lineCap='square';
-  ctx.beginPath();
-  const sx=-size*.36,sy=-size*.32;
-  for(let i=0;i<4;i++){
-    const px=sx+i*size*.22;
-    ctx.moveTo(px,sy+size*.48);ctx.lineTo(px,sy);ctx.lineTo(px+size*.19,sy+size*.48);
-  }
-  ctx.stroke();ctx.restore();
-}
 function masthead(type, item, accent){
-  brandMark(78,80,72,accent);
-  display('NOISE',169,120,47,PAPER,900);
+  // Tanpa logo di sini. Artwork logo sudah memuat wordmark "NOISEANTARA"
+  // sendiri, jadi ditempel di samping teks yang sama hanya mengulang dua kali
+  // — dan pada 56px wordmark di dalam logo jadi gumpalan tak terbaca. Wordmark
+  // teks langsung ke margin kiri, satu-satunya branding di kepala kartu.
+  // Satu-satunya logo di dalam poster kini stiker di kolom kanan.
+  display('NOISE',78,120,47,PAPER,900);
   ctx.font=`900 47px ${fontDisplay}`;
   const noiseWidth=ctx.measureText('NOISE').width;
-  display('ANTARA',169+noiseWidth,120,47,accent,900);
-  mono('ARSIP MUSIK BAWAH TANAH',170,150,14,'#c5d1bf');
+  display('ANTARA',78+noiseWidth,120,47,accent,900);
+  mono('ARSIP MUSIK BAWAH TANAH',79,150,14,'#c5d1bf');
   mono('STORY FILE',1002,112,18,accent,'right');
   mono('1080 × 1920  /  9:16',1002,148,16,'#c4cfbf','right');
   mono(`01 / ${labels[type]} · ARSIP TERVERIFIKASI`,78,245,21,accent);
-  const right = type === 'rilisan' ? `${city(item.city).toUpperCase()} / ${item.year}` : type === 'zine' ? `${city(item.city).toUpperCase()} / ZINE` : type === 'gig' ? `${city(item.city).toUpperCase()} / ${item.year}` : type === 'label' ? `KATALOG LABEL / ARSIP` : type === 'pustaka' ? `PUSTAKA / CERITA ARSIP` : `${city(item.city).toUpperCase()} / ${item.formed}`;
+  const right = type === 'rilisan' ? `${city(item.city).toUpperCase()} / ${item.year}` : type === 'zine' ? `${city(item.city).toUpperCase()} / ZINE` : type === 'gig' ? `${city(item.city).toUpperCase()} / ${item.year}` : type === 'label' ? `KATALOG LABEL / ARSIP` : type === 'pustaka' ? `PUSTAKA / CERITA ARSIP` : `${city(item.city).toUpperCase()}${item.formed ? ' / '+item.formed : ''}`;
   fitLine(right,1002,245,443,21,16,fontMono,700,'#ced9c9','right');
 }
 function heroTitle(type,item,accent){
   const title=itemTitle(type,item).toUpperCase();
-  // Future titles may be longer than the demo ones: shrink or ellipsize rather than clipping.
+  
   fitMultiline(title,78,348,924,2,132,67,103,PAPER);
   let subtitle='';
-  if(type==='rilisan')subtitle=`${artistOf(item).name.toUpperCase()}  /  ${item.genre.toUpperCase()}  /  ${item.format.toUpperCase()}`;
-  if(type==='gig')subtitle=`${item.date.toUpperCase()}  /  ${city(item.city).toUpperCase()}  /  ${item.precision.toUpperCase()}`;
-  if(type==='zine')subtitle=`${item.period.toUpperCase()}  /  ${city(item.city).toUpperCase()}  /  ${item.issues.length} ISU TERKATALOG`;
-  if(type==='artis')subtitle=`${city(item.city).toUpperCase()}  /  TERBENTUK ${item.formed}`;
+  if(type==='rilisan')subtitle=`${artistNameOf(item).toUpperCase()}  /  ${String(item.genre||'ARSIP').toUpperCase()}  /  ${String(item.format||'ARSIP').toUpperCase()}`;
+  if(type==='gig')subtitle=`${String(item.date||'ARSIP').toUpperCase()}  /  ${city(item.city).toUpperCase()}  /  ${String(item.precision||'ARSIP').toUpperCase()}`;
+  if(type==='zine')subtitle=`${String(item.period||'ARSIP').toUpperCase()}  /  ${city(item.city).toUpperCase()}  /  ${(item.issues||[]).length} ISU TERKATALOG`;
+  if(type==='artis')subtitle=`${city(item.city).toUpperCase()}  /  TERBENTUK ${item.formed||'?'}`;
   if(type==='label')subtitle=`KATALOG MANDIRI  /  ARSIP TERVERIFIKASI`;
   if(type==='pustaka')subtitle=`ESAI & CATATAN  /  ARSIP TERVERIFIKASI`;
   line(78,475,1002,475,'#ffffff44',2);
@@ -261,13 +355,12 @@ function stampedWatermark(cx,cy,size){
   ctx.fillStyle='#ffffff';ctx.globalAlpha=.14;ctx.fillText('NOISEANTARA',0,0);
   ctx.restore();
 }
-function sticker(cx,cy,accent){
-  ctx.save();ctx.translate(cx,cy);ctx.rotate(.16);
-  ctx.fillStyle=accent;ctx.beginPath();ctx.arc(0,0,92,0,Math.PI*2);ctx.fill();
-  mono('ARSIP',0,-25,17,DARK,'center');
-  display('NOISE',0,14,48,DARK,900,'center');
-  display('ANTARA',0,56,48,DARK,900,'center');
-  ctx.restore();
+function sticker(cx,cy,size=128){
+  // Lingkaran "ARSIP / NOISE / ANTARA" diganti tile logo. Ini satu-satunya
+  // lambang di dalam poster: masthead dan footer cukup pakai wordmark teks.
+  // Ukuran 128 di layout persegi karena kolom kanan hanya selebar 157px
+  // (x 844-1001); tile 184px yang lama menabrak bingkai artwork di x<=811.
+  logoMark(cx,cy,size,.16);
 }
 function squareArtwork(image,type,item,accent){
   const x=106,y=554,s=696;
@@ -277,21 +370,23 @@ function squareArtwork(image,type,item,accent){
   stampedWatermark(x+s/2,y+s/2,91);
   mono('FIG. 001',845,583,17,accent);
   line(844,602,1001,602,'#ffffff5c');
-  display(type==='rilisan'?String(item.year):String(item.formed || item.year || ''),841,672,104,PAPER);
+  display(type==='rilisan'?String(item.year||'—'):String(item.formed || item.year || '—'),841,672,104,PAPER);
   mono(type==='rilisan'?'TAHUN ARSIP':'TERBENTUK',844,709,16,'#c3cfbf');
   line(844,743,1001,743,'#ffffff5c');
-  const tag=type==='rilisan'?item.format.toUpperCase():(item.genres?.[0] || 'ARSIP').toUpperCase();
+  const tag=type==='rilisan'?String(item.format||'ARSIP').toUpperCase():(item.genres?.[0] || 'ARSIP').toUpperCase();
   fitMultiline(tag,844,800,158,3,44,26,41,accent);
-  mono(type==='rilisan'?item.precision.toUpperCase():'PROFIL ARSIP',844,934,13,'#c3cfbf');
+  mono(type==='rilisan'?String(item.precision||'ARSIP').toUpperCase():'PROFIL ARSIP',844,934,13,'#c3cfbf');
   line(844,954,1001,954,'#ffffff5c');
   ctx.save();ctx.translate(998,1202);ctx.rotate(-Math.PI/2);
   mono('JEJAK YANG BOLEH DIBAGIKAN',0,0,14,'#c4d0bf');ctx.restore();
-  sticker(839,1140,accent);
+  // Dipindah keluar dari artwork ke kolom kanan, di bawah garis terakhir (y954)
+  // dan di kiri teks vertikal "JEJAK YANG BOLEH DIBAGIKAN" (x~998).
+  sticker(916,1062);
   mono('VISUAL ARSIP  /  SUMBER TERCATAT',106,1277,17,'#c4cfbf');
 }
 function fact(label,value,x,y,w,accent){
   mono(label,x,y,16,accent);
-  // Two-line facts are wrapped and shortened safely within the panel.
+  
   fitMultiline(String(value).toUpperCase(),x,y+55,w,2,43,26,41,PAPER,fontDisplay,800);
 }
 function portraitGeneric(image,type,item,accent){
@@ -317,6 +412,10 @@ function portraitGeneric(image,type,item,accent){
   }
   mono('DOKUMENTASI TERVERIFIKASI',fx+28,fy+fh-27,14,'#d2ddce');
   mono('VISUAL ARSIP  /  SUMBER TERCATAT',108,1265,17,'#c4cfbf');
+  // Sejajar kanan dengan baris caption, di bawah artwork (bawahnya y1210) dan
+  // di atas panel daftar (y1300). Dipakai layout potret agar tiap tipe kartu
+  // punya tepat satu lambang.
+  sticker(922,1240,92);
 }
 function portraitArtwork(image,type,item,accent){
   const x=108,y=566,w=423,h=634;
@@ -342,17 +441,20 @@ function portraitArtwork(image,type,item,accent){
   }
   mono('DOKUMENTASI TERVERIFIKASI',fx+28,fy+fh-27,14,'#d2ddce');
   mono(type==='gig'?'FLYER ARSIP  /  DATA TERVERIFIKASI':'SAMPUL ARSIP  /  KATALOG TERPERIKSA',108,1265,17,'#c4cfbf');
+  sticker(922,1240,92);
 }
 function getRows(type,item){
-  if(type==='rilisan')return item.tracks.map((track,i)=>({num:String(i+1).padStart(2,'0'),name:track.title,extra:track.duration||'—'}));
-  if(type==='gig')return item.lineup.map((member,i)=>({num:String(i+1).padStart(2,'0'),name:member.artist?artistBySlug(member.artist)?.name||'Nama belum tercatat':member.text||'Nama belum tercatat',extra:member.artist?'PENAMPIL':'BELUM PASTI'}));
-  if(type==='zine')return item.issues.map((issue,i)=>({num:String(i+1).padStart(2,'0'),name:`ISU NO. ${issue.number}`,extra:`${issue.year} / ${issue.pages} HAL.`}));
+  if(type==='rilisan')return (item.tracks||[]).map((track,i)=>({num:String(i+1).padStart(2,'0'),name:track.title,extra:track.duration||'—'}));
+  if(type==='gig')return (item.lineup||[]).map((member,i)=>({num:String(i+1).padStart(2,'0'),name:member.text||(member.artist?(artistBySlug(member.artist)?.name||'Nama belum tercatat'):'Nama belum tercatat'),extra:member.artist?'PENAMPIL':'BELUM PASTI'}));
+  if(type==='zine')return (item.issues||[]).map((issue,i)=>({num:String(i+1).padStart(2,'0'),name:`ISU NO. ${issue.number}`,extra:`${issue.year||'?'} / ${issue.pages||'?'} HAL.`}));
   if(type==='label')return [{num:'01',name:(item.description || 'Katalog rilisan label').slice(0,60).toUpperCase(),extra:'KATALOG'}];
   if(type==='pustaka')return [{num:'01',name:(item.summary || item.description || 'Cerita arsip').slice(0,60).toUpperCase(),extra:'CERITA'}];
+  const own=(item.releases||[]).slice().sort((a,b)=>(a.year||0)-(b.year||0));
+  if(own.length)return own.map((release,i)=>({num:String(i+1).padStart(2,'0'),name:release.title,extra:String(release.year||'?')}));
   return releases.filter(release=>release.artist===item.slug).sort((a,b)=>a.year-b.year).map((release,i)=>({num:String(i+1).padStart(2,'0'),name:release.title,extra:String(release.year)}));
 }
 function listPanel(type,item,accent){
-  // Keep essential list rows above the common ~13% bottom story-UI safe margin.
+  
   const x=78,y=1300,w=924,h=416,head=82;
   ctx.fillStyle=PAPER;ctx.fillRect(x,y,w,h);
   ctx.fillStyle=accent;ctx.fillRect(x,y,w,head);
@@ -375,10 +477,10 @@ function listPanel(type,item,accent){
     mono(`+ ${rows.length-shown.length} LAINNYA  /  BUKA ENTRI`,x+30,y+h-22,15,'#50654b');
   }else if(shown.length===1 && ['artis','zine','rilisan','label','pustaka'].includes(type)){
     line(x+26,y+h-155,x+w-26,y+h-155,'#bfc8b6',1.5);
-    const extra=type==='artis'?item.short:type==='zine'?item.issues[0].summary:(item.description || item.summary || 'Buka entri untuk konteks lengkap');
+    const extra=type==='artis'?item.short:type==='zine'?(item.issues||[])[0]?.summary:(item.description || item.summary || 'Buka entri untuk konteks lengkap');
     const note=type==='artis'?'KARAKTER BUNYI / ARSIP':type==='zine'?'ISI ISU / KATALOG':type==='label'?'KATALOG LABEL / ARSIP':type==='pustaka'?'RINGKASAN / ARSIP':'KONTEKS RILISAN / ARSIP';
     mono(note,x+27,y+h-122,15,'#52624e');
-    fitMultiline(extra.toUpperCase(),x+27,y+h-68,834,2,38,27,39,DARK,fontDisplay,800);
+    fitMultiline(String(extra||'').toUpperCase(),x+27,y+h-68,834,2,38,27,39,DARK,fontDisplay,800);
   }else if(shown.length<3){
     line(x+26,y+h-69,x+w-26,y+h-69,'#bfc8b6',1.5);
     mono(type==='rilisan'?'RILISAN INI MEMILIKI SATU LAGU YANG TERCATAT':'BUKA ENTRI UNTUK KONTEKS LENGKAP',x+27,y+h-32,16,'#52624e');
@@ -390,18 +492,20 @@ function listPanel(type,item,accent){
 function footer(type,item,accent){
   ctx.fillStyle='#111810';ctx.fillRect(0,1757,W,163);
   ctx.fillStyle=accent;ctx.fillRect(78,1757,924,3);
-  brandMark(78,1784,55,accent);
-  display('NOISE',150,1824,42,PAPER);
+  // Footer tidak lagi memakai logo. Di sini sudah ada wordmark "NOISE ANTARA"
+  // plus baris "… · NOISEANTARA" di bawahnya, jadi lambang hanya pengulangan.
+  // Teks digeser ke margin kiri 78 supaya sejajar dengan elemen lain di poster.
+  display('NOISE',78,1824,42,PAPER);
   ctx.font=`900 42px ${fontDisplay}`;
-  display('ANTARA',150+ctx.measureText('NOISE').width,1824,42,accent);
-  mono('ARSIP MUSIK BAWAH TANAH',150,1850,14,'#c6d1c2');
+  display('ANTARA',78+ctx.measureText('NOISE').width,1824,42,accent);
+  mono('ARSIP MUSIK BAWAH TANAH',78,1850,14,'#c6d1c2');
   fitLine(`/${type}/${item.slug}`,1003,1818,358,16,12,fontMono,700,accent,'right');
   mono('BACA ENTRI ↗',1003,1848,14,'#d0dacc','right');
   line(78,1874,1002,1874,'#ffffff33',1);
   mono('ARSIP TERVERIFIKASI  ·  SUMBER TERCATAT  ·  NOISEANTARA',78,1901,13,'#c9d2c4');
 }
 function renderPoster(type,item,image){
-  const accent=COLORS[palette];
+  const accent=COLORS[ACCENT];
   resetCanvas(accent);
   masthead(type,item,accent);
   heroTitle(type,item,accent);
@@ -418,7 +522,7 @@ async function refresh({ updateURL=true }={}) {
   if(updateURL)updateAddress(type,item);
   setStatus('Menyusun poster dari font dan ilustrasi lokal…');
   try{
-    const [image]=await Promise.all([localArtwork(itemImage(type,item)),fontsReady]);
+    const [image]=await Promise.all([localArtwork(itemImage(type,item)),fontsReady,logoReady]);
     if(id!==requestId)return;
     renderPoster(type,item,image);
     setReady(true);
@@ -454,7 +558,7 @@ function downloadBlob(blob){
   setStatus('PNG tersimpan. Pilih gambar tersebut dari galeri saat membuat Story atau TikTok Photo.');
 }
 
-// Solid-color placeholder before the module has finished loading assets.
+
 ctx.fillStyle=DARK;ctx.fillRect(0,0,W,H);
 ctx.fillStyle=COLORS.lime;ctx.fillRect(0,0,10,H);
 mono('NOISEANTARA / CAPTURE STUDIO',80,130,28,COLORS.lime);
@@ -466,13 +570,6 @@ const query=new URLSearchParams(location.search);
 changeType(query.get('tipe')||'rilisan',query.get('slug')||'');
 typeField.addEventListener('change',()=>changeType(typeField.value));
 entryField.addEventListener('change',()=>refresh());
-document.querySelectorAll('[data-palette]').forEach(button=>button.addEventListener('click',()=>{
-  palette=COLORS[button.dataset.palette]?button.dataset.palette:'lime';
-  document.querySelectorAll('[data-palette]').forEach(node=>{
-    const active=node===button;node.classList.toggle('is-active',active);node.setAttribute('aria-pressed',String(active));
-  });
-  refresh({updateURL:false});
-}));
 document.getElementById('safeButton').addEventListener('click',event=>{
   const button=event.currentTarget;
   const visible=document.getElementById('captureFrame').classList.toggle('show-safe');

@@ -1,5 +1,5 @@
-// Modul publik lanjutan. Seluruh gig, zine, flyer, dan isu di sini adalah DEMONSTRASI.
-// Tidak menggambarkan acara, publikasi, tempat, tanggal, atau orang sungguhan.
+
+
 
 export const gigs = [
   { slug: 'di-bawah-jembatan-2003', title: 'Di Bawah Jembatan', year: 2003, date: 'Oktober 2003', precision: 'Perkiraan bulan', city: 'surabaya', venue: 'Ruang Bawah / lokasi ilustratif', flyer: 'flyer-bawah-jembatan', genres: ['Hardcore', 'Punk'], lineup: [{ artist: 'rongga-trotoar' }, { artist: 'garis-retak' }, { text: 'Penampil lain belum tercatat' }], summary: 'Satu malam, beberapa nama, dan sebuah flyer yang mengingatkan mengapa dokumentasi kecil berarti.', story: 'Dalam entri demonstrasi ini, flyer dipakai sebagai pintu masuk ke lineup, kota, dan artefak yang saling terkait. Tidak ada peristiwa nyata yang diklaim berlangsung di tanggal atau tempat ini.', source: 'Flyer ilustratif dibuat khusus untuk prototipe Noiseantara.' },
